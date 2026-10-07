@@ -125,6 +125,8 @@ footer{font-size:13px;color:var(--muted);max-width:80ch;border-top:1px solid var
 .src{font-size:12px;color:var(--muted);margin:8px 0 0}
 @media (max-width:860px){.perf{grid-template-columns:1fr}}
 @media (max-width:520px){.tiles{grid-template-columns:1fr}}
+.detail{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 16px)}
+header{grid-template-columns:1fr}
 .co.fundrow{border-bottom:2px solid var(--ink)}
 .co.fundrow .tk{color:var(--accent)}
 .warn{font-size:13px;color:var(--ink);background:var(--accent-soft);padding:10px 12px;border-left:2px solid var(--accent);margin:0}
@@ -135,12 +137,7 @@ footer{font-size:13px;color:var(--muted);max-width:80ch;border-top:1px solid var
 <div class="wrap">
   <header>
     <div>
-      <span class="demo">Real fund and trades · sample holding prices</span>
       <h1>Cockroach Fund</h1>
-    </div>
-    <div class="intro">
-      <p>The black line is the fund. Each holding branches off on the day Piet first bought it or first mentioned it in a letter, and its thickness is its share of the fund.</p>
-      <p>The fund line is real, from the Merchant West factsheet. Every buy, add, trim and sale comes from the RECM letters, Vol 1 to Vol 4. The holdings' own price lines are still made up, so ignore how high or low a branch ends.</p>
     </div>
   </header>
 
@@ -263,7 +260,7 @@ document.addEventListener("click",e=>{
     const cur=H.find(h=>h.id===sel);
     if(filter==="all"||(cur&&!shown(cur)))sel="fund";render();return}
   const s=e.target.closest("[data-id]");
-  if(s){sel=s.dataset.id;render();if(s.closest("svg")||s.closest("#log"))document.getElementById("detail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"})}
+  if(s){sel=s.dataset.id;render();if(s.closest("#list")||s.closest("#log"))document.getElementById("detail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})}
 });
 
 // ---------- chart ----------
