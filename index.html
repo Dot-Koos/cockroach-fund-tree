@@ -125,6 +125,8 @@ footer{font-size:13px;color:var(--muted);max-width:80ch;border-top:1px solid var
 .src{font-size:12px;color:var(--muted);margin:8px 0 0}
 @media (max-width:860px){.perf{grid-template-columns:1fr}}
 @media (max-width:520px){.tiles{grid-template-columns:1fr}}
+.co.fundrow{border-bottom:2px solid var(--ink)}
+.co.fundrow .tk{color:var(--accent)}
 .warn{font-size:13px;color:var(--ink);background:var(--accent-soft);padding:10px 12px;border-left:2px solid var(--accent);margin:0}
 </style>
 </head>
@@ -141,12 +143,6 @@ footer{font-size:13px;color:var(--muted);max-width:80ch;border-top:1px solid var
       <p>The fund line is real, from the Merchant West factsheet. Every buy, add, trim and sale comes from the RECM letters, Vol 1 to Vol 4. The holdings' own price lines are still made up, so ignore how high or low a branch ends.</p>
     </div>
   </header>
-
-  <section class="buckets" aria-label="Four buckets">
-    <h3>The four buckets, Vol 4 no 32 (10 Sept 2026)</h3>
-    <div class="bar" id="bar"></div>
-    <p class="bnote">Click a bucket to show only its branches. Piet keeps about 25% in each. The figure on each bucket is how its current holdings have done since each first appears in the letters, weighted by size. It uses the sample prices, so it isn't real yet.</p>
-  </section>
 
   <section class="chartbox" aria-label="Fund tree chart">
     <div class="ctop">
@@ -243,7 +239,7 @@ const H=DATA.assets.map(a=>{
   return h;
 });
 const ret=h=>h.px[h.end]/h.px[h.bi]-1;
-let filter="all",sel=(H.find(h=>h.name==="Walt Disney")||H[0]).id;
+let filter="all",sel="fund";
 const shown=h=>filter==="all"||h.b===filter;
 const D=d=>d.toLocaleDateString("en-ZA",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
 const Ds=s=>D(new Date(s+"T00:00:00Z"));
@@ -255,7 +251,7 @@ const P=n=>(n>=0?"+":"−")+Math.abs(n*100).toFixed(1)+"%";
 function bucketRet(k){let w=0,t=0;H.filter(h=>h.b===k&&!h.sold&&!h.gone).forEach(h=>{const s=h.sizeAt(N-1).s||1;w+=s;t+=s*ret(h)});return w?t/w:0}
 // ---------- bucket bar + chips ----------
 function renderFilters(){
-  document.getElementById("bar").innerHTML=Object.entries(BUCKETS).map(([k,b])=>
+  if(document.getElementById("bar"))document.getElementById("bar").innerHTML=Object.entries(BUCKETS).map(([k,b])=>
     `<button style="flex:${b.w};background:${b.c}" data-b="${k}" aria-pressed="${filter===k}" class="${filter!=="all"&&filter!==k?"dim":""}"><span class="bn">${b.n} 25%</span><span class="br2">${P(bucketRet(k))}${H.some(h=>h.b===k&&!h.sold&&!h.gone&&!h.real)?" <em>sample</em>":""}</span></button>`).join("");
   document.getElementById("chips").innerHTML=[["all","All",null]].concat(Object.entries(BUCKETS).map(([k,b])=>[k,b.n,b.c])).map(([k,n,c])=>
     `<button class="chip" data-b="${k}" aria-pressed="${filter===k}">${c?`<i style="background:${c}"></i>`:""}${n}</button>`).join("");
@@ -264,7 +260,8 @@ document.addEventListener("click",e=>{
   if(e.target.closest("a"))return;
   const b=e.target.closest("[data-b]");
   if(b){filter=(filter===b.dataset.b&&b.dataset.b!=="all")?"all":b.dataset.b;
-    if(!shown(H.find(h=>h.id===sel)))sel=(H.find(shown)||{}).id;render();return}
+    const cur=H.find(h=>h.id===sel);
+    if(filter==="all"||(cur&&!shown(cur)))sel="fund";render();return}
   const s=e.target.closest("[data-id]");
   if(s){sel=s.dataset.id;render();if(s.closest("svg")||s.closest("#log"))document.getElementById("detail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"})}
 });
@@ -317,10 +314,10 @@ function renderChart(){
   });
   const fl=FEND;
   const trunk=`<path d="${path(0,fl,i=>AVG[i])}" fill="none" stroke="#9A9890" stroke-width="1.6" stroke-dasharray="1.5 3"/><path d="${path(0,fl,i=>BENCH[i])}" fill="none" stroke="#6B6A64" stroke-width="1.6" stroke-dasharray="6 4"/>`+
-    `<path d="${path(0,fl,i=>FUND[i])}" fill="none" stroke="#1C1C1A" stroke-width="3"/><path class="hit" d="${path(0,fl,i=>FUND[i])}" data-trunk="1"/><circle cx="${x(fl)}" cy="${y(FUND[fl])}" r="4" fill="#1C1C1A"/>`+
-    `<text x="${x(fl)+8}" y="${y(FUND[fl])+4}" font-family="Archivo,Arial" font-weight="600" font-size="13" fill="#1C1C1A">Fund R${G[G.length-1][1].toFixed(1)}</text><text x="${x(fl)+8}" y="${y(FUND[fl])+19}" class="axis">30 Jun 2026</text>`+
+    `<path d="${path(0,fl,i=>FUND[i])}" fill="none" stroke="#1C1C1A" stroke-width="${sel==="fund"?4:3}"/><g data-id="fund"><path class="hit" d="${path(0,fl,i=>FUND[i])}" data-trunk="1"/></g><circle cx="${x(fl)}" cy="${y(FUND[fl])}" r="${sel==="fund"?5:4}" fill="#1C1C1A"/>`+
+    `<text x="${x(fl)+8}" y="${y(FUND[fl])+4}" font-family="Archivo,Arial" font-weight="${sel==="fund"?700:600}" font-size="${sel==="fund"?15:13}" fill="#1C1C1A">${sel==="fund"?"Cockroach Fund":"Fund"} R${G[G.length-1][1].toFixed(1)}</text><text x="${x(fl)+8}" y="${y(FUND[fl])+19}" class="axis">30 Jun 2026</text>`+
     `<text x="${x(fl)+8}" y="${y(BENCH[fl])+4}" class="axis">Benchmark R${G[G.length-1][2].toFixed(1)}</text>`;
-  document.getElementById("chart").innerHTML=`<svg viewBox="0 0 ${W} ${Ht}" class="${sel&&shown(H.find(h=>h.id===sel))?"has-sel":""}" role="img" aria-label="Cockroach Fund with a branch for each holding from the date it was bought or first mentioned">${g}${br}${trunk}${mk}</svg><div class="tip" id="tip" hidden></div>`;
+  document.getElementById("chart").innerHTML=`<svg viewBox="0 0 ${W} ${Ht}" class="${sel==="fund"||shown(H.find(h=>h.id===sel)||{})?"has-sel":""}" role="img" aria-label="Cockroach Fund with a branch for each holding from the date it was bought or first mentioned">${g}${br}${trunk}${mk}</svg><div class="tip" id="tip" hidden></div>`;
   const tip=document.getElementById("tip"),svg=document.querySelector("#chart svg");
   svg.addEventListener("mousemove",e=>{
     const tr=e.target.closest("[data-trunk]");
@@ -356,7 +353,8 @@ function renderPerf(){
 function renderList(){
   const vis=H.filter(shown);
   document.getElementById("count").textContent=vis.length+" holdings";
-  document.getElementById("list").innerHTML=Object.entries(BUCKETS).filter(([k])=>filter==="all"||filter===k).map(([k,b])=>
+  const L=G[G.length-1];
+  document.getElementById("list").innerHTML=`<button class="co fundrow" data-id="fund" aria-current="${sel==="fund"}"><span class="nm">Cockroach Fund</span><span class="r lbl">R100 → R${L[1].toFixed(1)}<small>Since Sept 2020</small></span><span class="tk">RCGFA · the whole fund</span></button>`+Object.entries(BUCKETS).filter(([k])=>filter==="all"||filter===k).map(([k,b])=>
     `<div class="grp"><span><b style="background:${b.c}"></b>${b.n}</span><span>25%</span></div>`+
     H.filter(h=>h.b===k).sort((a,b)=>(a.sold||a.gone)-(b.sold||b.gone)||(b.sizeAt(N-1).s||0)-(a.sizeAt(N-1).s||0)).map(h=>`<button class="co ${h.sold||h.gone?"gone":""}" data-id="${h.id}" aria-current="${h.id===sel}">
       <span class="nm">${esc(h.name)}</span><span class="r lbl">${h.label}<small>${h.bought?"Bought":"Seen"} ${DATES[h.bi].toLocaleDateString("en-ZA",{month:"short",year:"2-digit",timeZone:"UTC"})}</small></span>
@@ -366,6 +364,19 @@ function renderList(){
 // ---------- detail ----------
 function renderDetail(){
   const h=H.find(k=>k.id===sel),el=document.getElementById("detail");
+  if(sel==="fund"){
+    const L=G[G.length-1],yrs=(L[0]-G[0][0])/(365.25*864e5),pa=v=>((Math.pow(v/100,1/yrs)-1)*100).toFixed(1);
+    const held=H.filter(k=>!k.sold&&!k.gone).length,named=H.reduce((n,k)=>n+k.ev.filter(e=>["buy","add","trim","sold"].includes(e.a)).length,0);
+    el.innerHTML=`<div class="dhead"><div><span class="eyebrow">RCGFA · Merchant West SCI Worldwide Flexible Fund</span><h2>Cockroach Fund</h2></div>
+      <span class="pill"><i style="background:#1C1C1A"></i>The whole fund</span></div>
+      <div class="stats">
+        <div class="v"><h4>R100 on 29 Sept 2020</h4><strong>R${L[1].toFixed(1)}</strong><small>${pa(L[1])}% a year, to 30 Jun 2026</small></div>
+        <div class="v"><h4>Benchmark CPI + 6%</h4><strong>R${L[2].toFixed(1)}</strong><small>${pa(L[2])}% a year</small></div>
+        <div class="v"><h4>Category average</h4><strong>R${L[3].toFixed(1)}</strong><small>${pa(L[3])}% a year</small></div>
+      </div>
+      <p class="q">About 25% each in cash, bonds, equities and hard assets. ${held} holdings are still on the tree, and the letters name ${named} trades since Aug 2023. Click a branch or a holding to see Piet's own words about it.</p>
+      <p class="q"><small>Source: ${esc(FUNDDATA.source)}. Values read off the factsheet chart, accurate to about ±0.3.</small></p>`;
+    return}
   if(!h){el.innerHTML="<p>Pick a holding.</p>";return}
   const b=BUCKETS[h.b],first=h.ev[0],trades=h.ev.filter(e=>["buy","add","trim","sold"].includes(e.a)).length;
   const status=h.sold?`Sold ${Ds(h.ev.find(e=>e.a==="sold").d)}`:h.gone?"Not in the Sept 2026 breakdown":"Held";
