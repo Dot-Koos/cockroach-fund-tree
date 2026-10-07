@@ -1,0 +1,34 @@
+asset,ticker,bucket,first_buy_date,first_buy_ref,last_size,last_size_ref,status
+Japanese yen,JPY=X,cash,before 2025-09-11,before Vol 3 no 33,5%,Vol 4 no 32,held
+Merchant West Enhanced Income Fund,,cash,2026-01-22,Vol 4 no 2,10%,Vol 4 no 32,held
+South African rand cash,,cash,before 2025-09-11,before Vol 3 no 33,3%,Vol 3 no 33,not in Vol 4 no 32 breakdown; likely the Enhanced Income Fund
+US Treasury bonds (short-dated),IB01.L,cash,2024-04-25,Vol 2 no 15,10%,Vol 4 no 32,held
+US dollar cash,,cash,before 2025-09-11,before Vol 3 no 33,15%,Vol 3 no 33,"not in Vol 4 no 32 breakdown; moved into IB01, yen and Enhanced Income"
+Namibian government bonds,,bonds,before 2026-01-22,before Vol 4 no 2,2%,Vol 4 no 32,held
+SA government bonds (long-dated),,bonds,before 2024-02-08,before Vol 2 no 5,10%,Vol 4 no 33,held
+VanEck EM Local Currency Bond ETF,EMLC,bonds,2025-09-11,Vol 3 no 33,10%,Vol 4 no 33,held
+iShares Japan Govt Bond ETF,2561.T,bonds,2026-01-22,Vol 4 no 2,5%,Vol 4 no 32,held
+Berkshire Hathaway,BRK-B,equities,before 2023-11-30,before Vol 1 no 14 (held long-term),part of 14% (6 forever stocks),Vol 4 no 32,held
+British American Tobacco,BTI,equities,before 2023-12-07,before Vol 1 no 15,a little,Vol 1 no 15,not in Vol 4 no 32 breakdown; fund never named
+DSM-Firmenich,DSFIR.AS,equities,2025-11-20 to 2026-02-19 (not given),Vol 4 no 6,part of 14% (6 forever stocks),Vol 4 no 32,held
+Estee Lauder,EL,equities,2025-02-06 (recently before),Vol 3 no 4,0%,Vol 3 no 40,sold
+Exor,EXO.AS,equities,before 2024-02-15,before Vol 2 no 6,,,not in Vol 4 no 32 breakdown; sale not reported
+Hermes,RMS.PA,equities,2026-05-07,Vol 4 no 15,part of 14% (6 forever stocks),Vol 4 no 32,held
+LSE Group,LSEG.L,equities,2024-12 to 2025-09 (not given),Vol 3 no 33,part of 14% (6 forever stocks),Vol 4 no 32,held
+Nestle,NESN.SW,equities,2024-11-07,Vol 2 no 41,part of 14% (6 forever stocks),Vol 4 no 32,held
+Nintendo,7974.T,equities,2026-05-14,Vol 4 no 16,1% at buy; part of 14%,Vol 4 no 32,held
+Russian equities (frozen),,equities,before 2024-05-02,before Vol 2 no 16,0%,Vol 3 no 13,held (marked to 0; not listed in breakdown)
+South African value stocks,,equities,before 2024-02-08,before Vol 2 no 5,5%,Vol 4 no 32,held
+Walt Disney,DIS,equities,2024-11-07,Vol 2 no 41,part of 14% (6 forever stocks),Vol 4 no 32,held
+Westaim,WED.V,equities,a few years before 2024-05-23,"before Vol 2 no 19 (""a few years ago"")",small,Vol 2 no 19,not in Vol 4 no 32 breakdown; sale not reported
+iShares MSCI Emerging Markets ETF,EEM,equities,before 2024-10-03,before Vol 2 no 36,3%,Vol 4 no 32,held
+iShares MSCI World ETF,IWDA.L,equities,before 2026-02-19,before Vol 4 no 6,3%,Vol 4 no 32,held
+CMSG,CMSG,hard assets,2026-06-18 to 2026-08-20 (announced Vol 4 no 21),Vol 4 no 21,1%,Vol 4 no 32,held
+Energy Select SPDR ETF,XLE,hard assets,before 2026-01-29,before Vol 4 no 3,4%,Vol 4 no 32,held
+FRMO,FRMO,hard assets,before 2024-02-15,before Vol 2 no 6,2%,Vol 4 no 32,held
+Gold (physical),GLD,hard assets,before 2023-12-14,before Vol 1 no 16,12%,Vol 4 no 32,held
+St Joe,JOE,hard assets,before 2026-01-29,before Vol 4 no 3,1%,Vol 4 no 32,held
+Texas Pacific Land,TPL,hard assets,before 2024-10-10,before Vol 2 no 37,3%,Vol 4 no 32,held
+Valterra Platinum,VAL.JO,hard assets,before 2025-09-11,before Vol 3 no 33 (platinum),1%,Vol 4 no 32,held
+Wheaton Precious Metals,WPM,hard assets,before 2024-02-08,before Vol 2 no 5,core holding,Vol 2 no 19,"not in Vol 4 no 32 breakdown; Vol 4 no 21 says a streaming company must be bought, so likely sold earlier (not reported)"
+Yellow Cake,YCA.L,hard assets,before 2024-01-18,before Vol 2 no 2,1%,Vol 4 no 32,held

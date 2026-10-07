@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cockroach Fund Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: matches the Mr Market page (RECM letters look). Warm paper, black ink, hairline rules, square corners.
+   Header and four-bucket bar, then the full-width "tree" chart (fund trunk, one branch per holding from its buy date),
+   then holdings list left and the selected holding right, then the trade log. Single light theme on purpose, like Mr Market. */
+:root{
+  color-scheme:light;
+  --bg:#F4F3EF; --panel:#FBFAF7; --ink:#1C1C1A; --muted:#6B6A64; --line:#D9D6CE; --accent:#A87412; --accent-soft:#EFE6D2;
+  --cash:#5F7F8E; --bonds:#4E7A52; --equity:#9C3B2C; --hard:#A87412; --trunk:#1C1C1A;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Barlow","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:48px 64px;padding-inline:24px;display:grid;gap:36px}
+.eyebrow{font:600 11px/1.3 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+header{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:end;padding-bottom:28px;border-bottom:1px solid var(--line)}
+h1{font:600 clamp(40px,6vw,64px)/1.02 var(--display);letter-spacing:-.035em;margin:10px 0 0;text-wrap:balance}
+.intro{border-left:1px solid var(--line);padding-left:28px;line-height:1.7;max-width:56ch;min-width:0}
+.intro p{margin:0 0 10px}
+.demo{display:inline-block;border:1px solid var(--accent);color:var(--accent);font:600 10px/1 var(--body);padding:6px 9px;letter-spacing:.16em;text-transform:uppercase}
+h2{font:600 18px/1.2 var(--display);letter-spacing:-.01em;margin:0}
+h3{font:600 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+
+/* four buckets */
+.buckets{display:grid;gap:10px}
+.bar{display:flex;height:34px;border:1px solid var(--ink)}
+.bar button{border:0;border-right:1px solid var(--bg);color:#FBFAF7;font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:0 10px;text-align:left;white-space:nowrap;overflow:hidden;min-width:0}
+.bar button:last-child{border-right:0}
+.bar button[aria-pressed="false"].dim{opacity:.35}
+.bar button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.bnote{font-size:13px;color:var(--muted);margin:0}
+
+/* chart */
+.chartbox{border:1px solid var(--line);background:var(--panel);padding:24px;display:grid;gap:14px;min-width:0}
+.ctop{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:7px;font:600 10px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;padding:7px 10px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;border-radius:0}
+.chip i{width:9px;height:9px;display:inline-block}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
+.legend svg{vertical-align:middle;margin-right:6px}
+.chart{position:relative;overflow-x:auto}
+.chart svg{display:block;width:100%;min-width:560px;height:auto}
+.br{fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.8;transition:opacity .15s}
+.hit{fill:none;stroke:transparent;stroke-width:14;cursor:pointer}
+svg.has-sel .br{opacity:.22}
+svg.has-sel .br.on{opacity:1}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font:13px/1.45 var(--body);padding:7px 10px;white-space:nowrap;transform:translate(-50%,-110%);font-variant-numeric:tabular-nums}
+.axis{font:12px var(--body);fill:var(--muted)}
+.how{font-size:13px;color:var(--muted);margin:0;max-width:80ch}
+
+/* list + detail */
+.main{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.4fr);gap:40px;align-items:start}
+.list-head{padding:0 0 12px;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line)}
+.list-head span{font:600 11px var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.grp{display:flex;justify-content:space-between;padding:18px 0 8px;border-bottom:1px solid var(--ink);font:600 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase}
+.grp b{display:inline-block;width:9px;height:9px;margin-right:8px}
+.co{display:grid;grid-template-columns:1fr auto;gap:2px 12px;width:100%;padding:11px 10px;border:0;border-bottom:1px solid var(--line);background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.co:hover{background:var(--panel)}
+.co[aria-current="true"]{background:var(--panel);box-shadow:inset 2px 0 0 var(--accent)}
+.co:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.co .nm{font:600 16px/1.25 var(--display);letter-spacing:-.01em}
+.co .tk{font:500 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.co .r{font:600 15px/1.25 var(--display);text-align:right;font-variant-numeric:tabular-nums;grid-row:span 2;align-self:center}
+.co .r small{display:block;font:500 11px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.sold .nm{color:var(--muted)}
+
+.detail{display:grid;gap:24px;border:1px solid var(--line);background:var(--panel);padding:28px;min-width:0}
+.dhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-end;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.dhead h2{font-size:clamp(26px,3.2vw,36px);letter-spacing:-.03em;margin-top:10px;line-height:1.05}
+.pill{display:inline-flex;align-items:center;gap:7px;font:600 10px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;padding:6px 9px;border:1px solid var(--ink)}
+.pill i{width:9px;height:9px;display:inline-block}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.v{padding:14px 16px;display:grid;gap:6px;background:var(--panel)}
+.v h4{margin:0;font:600 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.v strong{font:600 22px/1.15 var(--display);letter-spacing:-.015em;font-variant-numeric:tabular-nums}
+.v small{font-size:13px;color:var(--muted)}
+.verdict{padding:12px 14px;border-left:2px solid var(--accent);background:var(--bg);font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font:600 10px/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 12px 10px 0;border-bottom:1px solid var(--line)}
+td{padding:11px 12px 11px 0;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+td.num{font:500 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.tbl{overflow-x:auto}
+tr[data-id]{cursor:pointer}
+tr[data-id]:hover td{background:var(--panel)}
+tr[aria-current="true"] td{background:var(--accent-soft)}
+.act{font:600 10px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;padding:4px 7px;border:1px solid var(--ink);white-space:nowrap}
+.act.sold{background:var(--ink);color:var(--panel)}
+footer{font-size:13px;color:var(--muted);max-width:80ch;border-top:1px solid var(--line);padding-top:20px;line-height:1.7}
+@media (max-width:860px){header,.main{grid-template-columns:1fr}.intro{border-left:0;padding-left:0}}
+@media (max-width:520px){.wrap{padding-inline:16px;padding-block:32px 48px}.detail,.chartbox{padding:16px}.stats{grid-template-columns:1fr}.bar button{font-size:9px;padding:0 6px;letter-spacing:.06em}}
+@media (prefers-reduced-motion:reduce){.br{transition:none}}
+.br.dash{stroke-dasharray:3 5}
+.q{font-size:14px;line-height:1.5}
+.q a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+.q small{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+.act.buy{background:var(--accent-soft)}
+.act.est,.act.held{border-color:var(--line);color:var(--muted)}
+.gone .nm{color:var(--muted)}
+.co .r.lbl{font:600 13px/1.25 var(--body);letter-spacing:.04em}
+.bar{height:auto;min-height:48px}
+.bar button{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:8px 10px}
+.bar .br2{font:600 15px/1 var(--display);letter-spacing:-.01em;text-transform:none}
+.bar .br2 em{font:600 9px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;font-style:normal;opacity:.75}
+.perf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:32px;align-items:start}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.tile{background:var(--panel);padding:14px 16px;display:grid;gap:6px}
+.tile h4{margin:0;font:600 10px/1.2 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.tile strong{font:600 26px/1.05 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tile.main strong{color:var(--ink)}
+.tile small{font-size:13px;color:var(--muted)}
+.ptab td,.ptab th{text-align:right}.ptab td:first-child,.ptab th:first-child{text-align:left}
+.ptab td.f{font-weight:600}
+.src{font-size:12px;color:var(--muted);margin:8px 0 0}
+@media (max-width:860px){.perf{grid-template-columns:1fr}}
+@media (max-width:520px){.tiles{grid-template-columns:1fr}}
+.warn{font-size:13px;color:var(--ink);background:var(--accent-soft);padding:10px 12px;border-left:2px solid var(--accent);margin:0}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <span class="demo">Real fund and trades · sample holding prices</span>
+      <h1>Cockroach Fund</h1>
+    </div>
+    <div class="intro">
+      <p>The black line is the fund. Each holding branches off on the day Piet first bought it or first mentioned it in a letter, and its thickness is its share of the fund.</p>
+      <p>The fund line is real, from the Merchant West factsheet. Every buy, add, trim and sale comes from the RECM letters, Vol 1 to Vol 4. The holdings' own price lines are still made up, so ignore how high or low a branch ends.</p>
+    </div>
+  </header>
+
+  <section class="buckets" aria-label="Four buckets">
+    <h3>The four buckets, Vol 4 no 32 (10 Sept 2026)</h3>
+    <div class="bar" id="bar"></div>
+    <p class="bnote">Click a bucket to show only its branches. Piet keeps about 25% in each. The figure on each bucket is how its current holdings have done since each first appears in the letters, weighted by size. It uses the sample prices, so it isn't real yet.</p>
+  </section>
+
+  <section class="chartbox" aria-label="Fund tree chart">
+    <div class="ctop">
+      <h2>R100 in the fund, and every holding from the letters</h2>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="chips" id="range" role="group" aria-label="Time range"></div>
+    <div class="legend">
+      <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#1C1C1A" stroke-width="3"/></svg>Cockroach Fund (real)</span>
+      <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#6B6A64" stroke-width="1.6" stroke-dasharray="6 4"/></svg>Benchmark CPI + 6%</span>
+      <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#9A9890" stroke-width="1.6" stroke-dasharray="1.5 3"/></svg>Category average</span>
+      <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#1C1C1A"/></svg>Bought</span>
+      <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.2" fill="#FBFAF7" stroke="#1C1C1A" stroke-width="1.6"/></svg>First mentioned, already owned</span>
+      <span><svg width="12" height="12"><path d="M6 1.5 10.5 9.5H1.5Z" fill="#1C1C1A"/></svg>Added</span>
+      <span><svg width="12" height="12"><path d="M6 10.5 10.5 2.5H1.5Z" fill="#1C1C1A"/></svg>Trimmed</span>
+      <span><svg width="12" height="12"><path d="M2 2 10 10M10 2 2 10" stroke="#1C1C1A" stroke-width="2"/></svg>Sold</span>
+      <span><svg width="12" height="12"><text x="6" y="10" text-anchor="middle" font-family="Archivo,Arial" font-weight="700" font-size="11" fill="#1C1C1A">?</text></svg>Gone, sale not reported</span>
+    </div>
+    <div class="legend" aria-label="Line thickness">
+      <span style="font:600 10px var(--body);letter-spacing:.18em;text-transform:uppercase">Thickness = % of fund</span>
+      <span><svg width="26" height="12"><line x1="3" y1="6" x2="23" y2="6" stroke="#6B6A64" stroke-width="1.6" stroke-linecap="round"/></svg>1%</span>
+      <span><svg width="26" height="12"><line x1="3" y1="6" x2="23" y2="6" stroke="#6B6A64" stroke-width="4.6" stroke-linecap="round"/></svg>5%</span>
+      <span><svg width="26" height="14"><line x1="5" y1="7" x2="21" y2="7" stroke="#6B6A64" stroke-width="8.3" stroke-linecap="round"/></svg>10%</span>
+      <span><svg width="30" height="16"><line x1="6" y1="8" x2="24" y2="8" stroke="#6B6A64" stroke-width="13" stroke-linecap="round"/></svg>16%</span>
+      <span><svg width="26" height="12"><line x1="3" y1="6" x2="23" y2="6" stroke="#6B6A64" stroke-width="1.4" stroke-dasharray="3 4"/></svg>Size not given yet</span>
+    </div>
+    <div class="chart" id="chart"></div>
+    <p class="how">R100 invested on 29 Sept 2020, month-end values to 30 June 2026 (read off the factsheet chart, accurate to about ±0.3). The letters start in Aug 2023, so all branches sit in the right-hand part; use "Since 2020" to see the whole fund history. A branch starts at the fund's value on its date. Hover a branch for its size on that date; click it to see Piet's own words below.</p>
+  </section>
+
+  <section class="main">
+    <nav aria-label="Holdings">
+      <div class="list-head"><h2>Holdings</h2><span id="count"></span></div>
+      <div id="list"></div>
+    </nav>
+    <article class="detail" id="detail" aria-live="polite"></article>
+  </section>
+
+  <section aria-label="Trade log">
+    <h3>Trade log, from the letters</h3>
+    <div class="tbl"><table><thead><tr><th>Date</th><th>Letter</th><th>Action</th><th>Holding</th><th>Size after</th><th>Piet's words</th></tr></thead><tbody id="log"></tbody></table></div>
+  </section>
+
+  <footer>Trades, sizes, dates and quotes come from Piet Viljoen's RECM letters (recm.co.za/letters), Vol 1 no 1 to Vol 4 no 35. Sizes are % of the fund as Piet states them; the seven forever stocks are drawn at about 2% each from his "14% in 6 of my 10 Stocks, Forever" (Vol 4 no 32). Branches with a hollow start were already owned before the letter that first mentions them. Russian shares (4 stocks, marked to zero) are still owned but not drawn. The fund, benchmark and category lines come from the Merchant West SCI Worldwide Flexible Fund minimum disclosure document as of 30 June 2026. The holdings' price lines are sample data until real weekly prices are added.</footer>
+</div>
+
+<script src="data.js"></script>
+<script src="fund.js"></script>
+<script src="prices.js"></script>
+<script>
+
+// ---------- setup ----------
+const BUCKETS={cash:{n:"Cash",c:"#5F7F8E",w:25},bonds:{n:"Bonds",c:"#4E7A52",w:25},equity:{n:"Equities",c:"#9C3B2C",w:25},hard:{n:"Hard assets",c:"#A87412",w:25}};
+
+const DATES=[];for(let d=new Date(Date.UTC(2020,9,2));d<=new Date(Date.UTC(2026,9,2));d.setUTCDate(d.getUTCDate()+7))DATES.push(new Date(d));
+const N=DATES.length;
+const idx=s=>{const t=new Date(s+"T00:00:00Z");for(let i=0;i<N;i++)if(DATES[i]>=t)return i;return N-1};
+const GONE_AT=idx("2026-09-10"); // first full breakdown without them
+const thick=p=>0.8+p*0.75;
+const VERB={buy:"Bought",add:"Added",trim:"Trimmed",sold:"Sold",held:"Mentioned",resized:"Size update",est:"Estimate"};
+
+// ---------- sample prices (replace with real weekly closes) ----------
+const PRICES=typeof REAL_PRICES!=="undefined"?REAL_PRICES:null;
+let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const gauss=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+const walk=(mu,vol)=>{const p=[1];for(let i=1;i<N;i++)p.push(p[i-1]*Math.exp(mu/52+vol*gauss()));return p};
+// real month-end values, interpolated to weeks; null after the last factsheet date
+const G=FUNDDATA.growth.map(r=>[new Date(r[0]+"T00:00:00Z"),r[1],r[2],r[3]]);
+const interp=col=>DATES.map(d=>{if(d>G[G.length-1][0])return null;for(let k=1;k<G.length;k++)if(G[k][0]>=d){const [a,b]=[G[k-1],G[k]],f=(d-a[0])/(b[0]-a[0]);return a[col]+(b[col]-a[col])*f}return null});
+const FUND=interp(1),BENCH=interp(2),AVG=interp(3);
+const FEND=FUND.findLastIndex(v=>v!=null);
+const LETTERS0=idx("2023-08-25");let view="letters";
+const MU={cash:.04,bonds:.08,equity:.09,hard:.12},VOL={cash:.008,bonds:.014,equity:.03,hard:.038};
+
+// ---------- prepare assets ----------
+const H=DATA.assets.map(a=>{
+  const h={...a};
+  h.ev=a.ev.map(e=>({...e,i:idx(e.d)}));
+  const first=h.ev[0];h.bi=first.i;h.bought=first.a==="buy";
+  const sold=h.ev.find(e=>e.a==="sold");
+  h.lastMention=h.ev[h.ev.length-1].i;
+  h.end=sold?sold.i:(h.gone?Math.max(GONE_AT,h.lastMention):N-1);
+  h.px=walk(MU[h.b]+(rnd()-.5)*.2,VOL[h.b]);h.real=false;
+  // real weekly closes when data/prices/<TICKER>.csv was supplied (last close on or before each Friday)
+  const rp=PRICES&&h.tk&&PRICES[h.tk];
+  if(rp&&rp.length){const pts=rp.map(([d,c])=>[new Date(d+"T00:00:00Z"),c]).sort((a,b)=>a[0]-b[0]);let k=0,last=pts[0][1];
+    h.px=DATES.map(d=>{while(k<pts.length&&pts[k][0]<=d){last=pts[k][1];k++}return last});h.real=true}
+  h.base=FUND[h.bi]??FUND[FEND];h.val=i=>h.base*h.px[i]/h.px[h.bi];
+  // size at week i: last stated % at or before i
+  h.sizeAt=i=>{let s=null,est=false;for(const e of h.ev){if(e.i>i)break;if(e.s!=null&&e.a!=="sold"){s=e.s;est=e.a==="est"}}return {s,est}};
+  const cur=h.sizeAt(h.end);
+  h.label=h.sold?"Sold":h.gone?"Gone?":cur.s!=null?(cur.est?"≈":"")+cur.s+"%":"size n/a";
+  h.id=a.id;
+  return h;
+});
+const ret=h=>h.px[h.end]/h.px[h.bi]-1;
+let filter="all",sel=(H.find(h=>h.name==="Walt Disney")||H[0]).id;
+const shown=h=>filter==="all"||h.b===filter;
+const D=d=>d.toLocaleDateString("en-ZA",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
+const Ds=s=>D(new Date(s+"T00:00:00Z"));
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// Bucket return: each holding still in the bucket, from the day it enters the tree to the latest week,
+// weighted by its latest size (1% where no size is given). Sample until real prices are added.
+const P=n=>(n>=0?"+":"−")+Math.abs(n*100).toFixed(1)+"%";
+function bucketRet(k){let w=0,t=0;H.filter(h=>h.b===k&&!h.sold&&!h.gone).forEach(h=>{const s=h.sizeAt(N-1).s||1;w+=s;t+=s*ret(h)});return w?t/w:0}
+// ---------- bucket bar + chips ----------
+function renderFilters(){
+  document.getElementById("bar").innerHTML=Object.entries(BUCKETS).map(([k,b])=>
+    `<button style="flex:${b.w};background:${b.c}" data-b="${k}" aria-pressed="${filter===k}" class="${filter!=="all"&&filter!==k?"dim":""}"><span class="bn">${b.n} 25%</span><span class="br2">${P(bucketRet(k))}${H.some(h=>h.b===k&&!h.sold&&!h.gone&&!h.real)?" <em>sample</em>":""}</span></button>`).join("");
+  document.getElementById("chips").innerHTML=[["all","All",null]].concat(Object.entries(BUCKETS).map(([k,b])=>[k,b.n,b.c])).map(([k,n,c])=>
+    `<button class="chip" data-b="${k}" aria-pressed="${filter===k}">${c?`<i style="background:${c}"></i>`:""}${n}</button>`).join("");
+}
+document.addEventListener("click",e=>{
+  if(e.target.closest("a"))return;
+  const b=e.target.closest("[data-b]");
+  if(b){filter=(filter===b.dataset.b&&b.dataset.b!=="all")?"all":b.dataset.b;
+    if(!shown(H.find(h=>h.id===sel)))sel=(H.find(shown)||{}).id;render();return}
+  const s=e.target.closest("[data-id]");
+  if(s){sel=s.dataset.id;render();if(s.closest("svg")||s.closest("#log"))document.getElementById("detail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"})}
+});
+
+// ---------- chart ----------
+function renderChart(){
+  const W=960,Ht=480,ml=48,mr=170,mt=14,mb=30;
+  const vis=H.filter(shown),i0=view==="all"?0:LETTERS0;
+  const ln=[FUND,BENCH,AVG].flatMap(a=>a.slice(i0).filter(v=>v!=null));
+  let lo=Math.min(...ln),hi=Math.max(...ln);
+  vis.forEach(h=>{for(let i=h.bi;i<=h.end;i++){const v=h.val(i);lo=Math.min(lo,v);hi=Math.max(hi,v)}});
+  const step=hi-lo>80?20:10;lo=Math.floor(lo/step)*step;hi=Math.ceil(hi/step)*step;
+  const x=i=>ml+(W-ml-mr)*(i-i0)/(N-1-i0),y=v=>mt+(Ht-mt-mb)*(1-(v-lo)/(hi-lo));
+  let g="";
+  for(let v=lo;v<=hi;v+=step)g+=`<line x1="${ml}" x2="${W-mr}" y1="${y(v)}" y2="${y(v)}" stroke="#D9D6CE" stroke-width=".6" stroke-dasharray="2 4"/><text class="axis" x="${ml-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+  let lastQ="";DATES.forEach((d,i)=>{const m=d.getUTCMonth();if(i>=i0&&(view==="all"?m===0:m%6===0)&&d.getUTCDate()<=7){const q=d.getUTCFullYear()+"-"+m;if(q!==lastQ){lastQ=q;g+=`<text class="axis" x="${x(i)}" y="${Ht-8}" text-anchor="middle">${d.toLocaleDateString("en-ZA",{month:"short",year:"numeric",timeZone:"UTC"})}</text><line x1="${x(i)}" x2="${x(i)}" y1="${Ht-mb}" y2="${Ht-mb+4}" stroke="#6B6A64"/>`}}});
+  // volume dividers
+  [["Vol 2","2024-01-11"],["Vol 3","2025-01-16"],["Vol 4","2026-01-15"]].forEach(([t,d])=>{const i=idx(d);g+=`<line x1="${x(i)}" x2="${x(i)}" y1="${mt}" y2="${Ht-mb}" stroke="#D9D6CE"/><text class="axis" x="${x(i)+4}" y="${mt+10}">${t}</text>`});
+  {const i=idx("2023-08-31");g+=`<line x1="${x(i)}" x2="${x(i)}" y1="${mt}" y2="${Ht-mb}" stroke="#D9D6CE"/><text class="axis" x="${x(i)+4}" y="${mt+10}">Vol 1</text>`}
+  const path=(a,b,f)=>{let s="";a=Math.max(a,i0);for(let i=a;i<=b;i++)s+=(i>a?"L":"M")+x(i).toFixed(1)+" "+y(f(i)).toFixed(1);return s};
+  const order=vis.slice().sort((a,b)=>(a.id===sel)-(b.id===sel)||(b.sizeAt(N-1).s||0)-(a.sizeAt(N-1).s||0));
+  let br="",mk="";
+  order.forEach(h=>{
+    const c=BUCKETS[h.b].c,on=h.id===sel,cls=`br ${on?"on":""}`;
+    // segments where the size changes
+    const cuts=[h.bi];h.ev.forEach(e=>{if(e.s!=null&&e.i>h.bi&&e.i<h.end&&!cuts.includes(e.i))cuts.push(e.i)});
+    if(h.gone&&h.lastMention<h.end&&!cuts.includes(h.lastMention))cuts.push(h.lastMention);
+    cuts.sort((a,b)=>a-b);cuts.push(h.end);
+    let segs="";
+    for(let k=0;k<cuts.length-1;k++){
+      const a=cuts[k],b=cuts[k+1];if(b<=a)continue;
+      const {s}=h.sizeAt(a),after=h.gone&&a>=h.lastMention;
+      segs+=`<path class="${cls}${s==null||after?" dash":""}" d="${path(a,b,h.val)}" stroke="${c}" stroke-width="${after?1.2:(s==null?1.4:thick(s)).toFixed(1)}"/>`;
+    }
+    br+=`<g data-id="${h.id}">${segs}<path class="hit" d="${path(h.bi,h.end,h.val)}" data-tip="${h.id}"/></g>`;
+    const opa=on?1:.6;
+    // start marker
+    const sx=x(h.bi),sy=y(h.base),r=Math.max(on?5:3.8,thick(h.sizeAt(h.bi).s||0)/2+1.5);
+    mk+=h.bought?`<circle cx="${sx}" cy="${sy}" r="${r}" fill="${c}" opacity="${opa}"/>`:`<circle cx="${sx}" cy="${sy}" r="${r}" fill="#FBFAF7" stroke="${c}" stroke-width="1.8" opacity="${opa}"/>`;
+    h.ev.slice(1).forEach(e=>{
+      if(e.i>h.end)return;
+      const px=x(e.i),py=y(h.val(e.i));
+      if(e.a==="add")mk+=`<path d="M${px} ${py-6}l5 8h-10z" fill="${c}" opacity="${opa}"/>`;
+      else if(e.a==="trim")mk+=`<path d="M${px} ${py+6}l5 -8h-10z" fill="${c}" opacity="${opa}"/>`;
+      else if(e.a==="sold")mk+=`<path d="M${px-5} ${py-5}l10 10M${px+5} ${py-5}l-10 10" stroke="${c}" stroke-width="2.4" opacity="${opa}"/>`;
+      else if(e.a==="buy")mk+=`<circle cx="${px}" cy="${py}" r="3.5" fill="${c}" opacity="${opa}"/>`;
+    });
+    if(h.gone)mk+=`<text x="${x(h.end)}" y="${y(h.val(h.end))+4}" text-anchor="middle" font-family="Archivo,Arial" font-weight="700" font-size="12" fill="${c}" opacity="${opa}">?</text>`;
+    if(on&&!h.gone&&!h.sold){mk+=`<text x="${x(h.end)+8}" y="${y(h.val(h.end))+4}" font-family="Archivo,Arial" font-weight="600" font-size="13" fill="${c}">${esc(h.name)} ${h.label}</text>`}
+  });
+  const fl=FEND;
+  const trunk=`<path d="${path(0,fl,i=>AVG[i])}" fill="none" stroke="#9A9890" stroke-width="1.6" stroke-dasharray="1.5 3"/><path d="${path(0,fl,i=>BENCH[i])}" fill="none" stroke="#6B6A64" stroke-width="1.6" stroke-dasharray="6 4"/>`+
+    `<path d="${path(0,fl,i=>FUND[i])}" fill="none" stroke="#1C1C1A" stroke-width="3"/><path class="hit" d="${path(0,fl,i=>FUND[i])}" data-trunk="1"/><circle cx="${x(fl)}" cy="${y(FUND[fl])}" r="4" fill="#1C1C1A"/>`+
+    `<text x="${x(fl)+8}" y="${y(FUND[fl])+4}" font-family="Archivo,Arial" font-weight="600" font-size="13" fill="#1C1C1A">Fund R${G[G.length-1][1].toFixed(1)}</text><text x="${x(fl)+8}" y="${y(FUND[fl])+19}" class="axis">30 Jun 2026</text>`+
+    `<text x="${x(fl)+8}" y="${y(BENCH[fl])+4}" class="axis">Benchmark R${G[G.length-1][2].toFixed(1)}</text>`;
+  document.getElementById("chart").innerHTML=`<svg viewBox="0 0 ${W} ${Ht}" class="${sel&&shown(H.find(h=>h.id===sel))?"has-sel":""}" role="img" aria-label="Cockroach Fund with a branch for each holding from the date it was bought or first mentioned">${g}${br}${trunk}${mk}</svg><div class="tip" id="tip" hidden></div>`;
+  const tip=document.getElementById("tip"),svg=document.querySelector("#chart svg");
+  svg.addEventListener("mousemove",e=>{
+    const tr=e.target.closest("[data-trunk]");
+    if(tr){const r=svg.getBoundingClientRect(),box=document.getElementById("chart").getBoundingClientRect();
+      const i=Math.max(i0,Math.min(FEND,Math.round(i0+((e.clientX-r.left)/r.width*W-ml)/((W-ml-mr)/(N-1-i0)))));
+      tip.innerHTML=`<b>Cockroach Fund</b> · ${D(DATES[i])}<br>R100 → R${FUND[i].toFixed(1)} · benchmark R${BENCH[i].toFixed(1)}`;
+      tip.style.left=(e.clientX-box.left)+"px";tip.style.top=(e.clientY-box.top)+"px";tip.hidden=false;return}
+    const t=e.target.closest("[data-tip]");if(!t){tip.hidden=true;return}
+    const h=H.find(k=>k.id===t.dataset.tip),r=svg.getBoundingClientRect(),box=document.getElementById("chart").getBoundingClientRect();
+    const i=Math.max(h.bi,Math.min(h.end,Math.round(i0+((e.clientX-r.left)/r.width*W-ml)/((W-ml-mr)/(N-1-i0)))));
+    const z=h.sizeAt(i),gone=h.gone&&i>h.lastMention;
+    tip.innerHTML=`<b>${esc(h.name)}</b> · ${D(DATES[i])}<br>${gone?"Not mentioned since "+D(DATES[h.lastMention]):z.s!=null?(z.est?"About ":"")+z.s+"% of the fund":"Size not given yet"}`;
+    tip.style.left=(e.clientX-box.left)+"px";tip.style.top=(e.clientY-box.top)+"px";tip.hidden=false;
+  });
+  svg.addEventListener("mouseleave",()=>tip.hidden=true);
+}
+
+// ---------- range + performance ----------
+function renderRange(){
+  document.getElementById("range").innerHTML=[["letters","Letters era, Aug 2023 on"],["all","Since 2020"]].map(([k,n])=>`<button class="chip" data-v="${k}" aria-pressed="${view===k}">${n}</button>`).join("");
+}
+document.addEventListener("click",e=>{const v=e.target.closest("[data-v]");if(v){view=v.dataset.v;renderRange();renderChart()}});
+function renderPerf(){
+  const L=G[G.length-1],f=L[1],b=L[2],a=L[3],yrs=(G[G.length-1][0]-G[0][0])/(365.25*864e5),pa=v=>(Math.pow(v/100,1/yrs)-1)*100;
+  document.getElementById("tiles").innerHTML=
+    `<div class="tile main"><h4>Cockroach Fund</h4><strong>+${(f-100).toFixed(1)}%</strong><small>R100 → R${f.toFixed(1)} · ${pa(f).toFixed(1)}% a year</small></div>`+
+    `<div class="tile"><h4>Benchmark CPI + 6%</h4><strong>+${(b-100).toFixed(1)}%</strong><small>R${b.toFixed(1)} · ${pa(b).toFixed(1)}% a year</small></div>`+
+    `<div class="tile"><h4>Category average</h4><strong>+${(a-100).toFixed(1)}%</strong><small>R${a.toFixed(1)} · ${pa(a).toFixed(1)}% a year</small></div>`;
+  document.getElementById("src").textContent=`Source: ${FUNDDATA.source}. 3-year volatility ${FUNDDATA.risk.standard_deviation}%, max drawdown ${FUNDDATA.risk.max_drawdown_pct}%.`;
+  document.getElementById("ptab").innerHTML=FUNDDATA.perf.map(r=>`<tr><td>${r.period}</td><td class="f">${r.fund_annualised_pct}%</td><td>${r.benchmark_annualised_pct}%</td><td>+${r.fund_cumulative_pct}%</td></tr>`).join("");
+}
+// ---------- list ----------
+function renderList(){
+  const vis=H.filter(shown);
+  document.getElementById("count").textContent=vis.length+" holdings";
+  document.getElementById("list").innerHTML=Object.entries(BUCKETS).filter(([k])=>filter==="all"||filter===k).map(([k,b])=>
+    `<div class="grp"><span><b style="background:${b.c}"></b>${b.n}</span><span>25%</span></div>`+
+    H.filter(h=>h.b===k).sort((a,b)=>(a.sold||a.gone)-(b.sold||b.gone)||(b.sizeAt(N-1).s||0)-(a.sizeAt(N-1).s||0)).map(h=>`<button class="co ${h.sold||h.gone?"gone":""}" data-id="${h.id}" aria-current="${h.id===sel}">
+      <span class="nm">${esc(h.name)}</span><span class="r lbl">${h.label}<small>${h.bought?"Bought":"Seen"} ${DATES[h.bi].toLocaleDateString("en-ZA",{month:"short",year:"2-digit",timeZone:"UTC"})}</small></span>
+      <span class="tk">${esc(h.tk||"no ticker")}</span></button>`).join("")).join("");
+}
+
+// ---------- detail ----------
+function renderDetail(){
+  const h=H.find(k=>k.id===sel),el=document.getElementById("detail");
+  if(!h){el.innerHTML="<p>Pick a holding.</p>";return}
+  const b=BUCKETS[h.b],first=h.ev[0],trades=h.ev.filter(e=>["buy","add","trim","sold"].includes(e.a)).length;
+  const status=h.sold?`Sold ${Ds(h.ev.find(e=>e.a==="sold").d)}`:h.gone?"Not in the Sept 2026 breakdown":"Held";
+  el.innerHTML=`<div class="dhead"><div><span class="eyebrow">${esc(h.tk||"no ticker")} · ${status}</span><h2>${esc(h.name)}</h2></div>
+    <span class="pill"><i style="background:${b.c}"></i>${b.n}</span></div>
+    <div class="stats">
+      <div class="v"><h4>${h.bought?"Bought":"First mentioned"}</h4><strong>${Ds(first.d)}</strong><small>${esc(first.ref)}${h.bought?"":" · already owned"}</small></div>
+      <div class="v"><h4>Latest size</h4><strong>${h.label}</strong><small>${h.sizeAt(h.end).est?"Estimated from the 14% group":"As Piet states it"}</small></div>
+      <div class="v"><h4>In the letters</h4><strong>${h.ev.filter(e=>e.a!=="est").length}×</strong><small>${trades} trade${trades===1?"":"s"} named</small></div>
+    </div>
+    ${h.gone?`<p class="warn">Piet never reported selling this, but it isn't in his full list of holdings in Vol 4 no 32. The dotted line runs from the last mention to that letter.</p>`:""}
+    <div><h3>What Piet said</h3><div class="tbl"><table><thead><tr><th>Date</th><th>Action</th><th>Size</th><th>Quote</th></tr></thead><tbody>
+    ${h.ev.slice().reverse().map(e=>`<tr><td>${Ds(e.d)}</td><td><span class="act ${e.a}">${VERB[e.a]||e.a}</span></td><td>${e.s!=null?(e.a==="est"?"≈":"")+e.s+"%":"–"}</td><td class="q"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.q)}</a><small>${esc(e.ref)}${e.n?" · "+esc(e.n):""}</small></td></tr>`).join("")}
+    </tbody></table></div></div>`;
+}
+
+// ---------- trade log ----------
+function renderLog(){
+  const rows=[];H.filter(shown).forEach(h=>h.ev.forEach(e=>{if(["buy","add","trim","sold"].includes(e.a))rows.push({h,e})}));
+  rows.sort((a,b)=>b.e.d.localeCompare(a.e.d)||a.h.name.localeCompare(b.h.name));
+  document.getElementById("log").innerHTML=rows.map(({h,e})=>`<tr data-id="${h.id}" aria-current="${h.id===sel}"><td>${Ds(e.d)}</td><td class="num">${esc(e.ref)}</td><td><span class="act ${e.a}">${VERB[e.a]}</span></td><td>${esc(h.name)}</td><td>${e.s!=null?e.s+"%":"–"}</td><td class="q"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.q)}</a></td></tr>`).join("");
+}
+
+renderRange();
+function render(){renderFilters();renderChart();renderList();renderDetail();renderLog()}
+render();
+</script>
+
+</body>
+</html>

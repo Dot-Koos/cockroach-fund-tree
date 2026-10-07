@@ -1,0 +1,504 @@
+{
+  "fund": "Merchant West SCI Worldwide Flexible Fund A",
+  "ticker": "RCGFA",
+  "source": "Minimum Disclosure Document as of 30/06/2026 (issued 15/07/2026)",
+  "growth_chart": {
+    "title": "Investment Growth (R100 invested)",
+    "base_date": "2020-09-29",
+    "base_value": 100,
+    "frequency": "monthly (month-end)",
+    "note": "Read from the factsheet chart vectors; values accurate to roughly \u00b10.3. Period starts at implementation of the new investment strategy. First row is the chart base (100); remaining rows are month-ends.",
+    "series": [
+      {
+        "key": "fund",
+        "label": "Fund",
+        "printed_end_value": 169.7
+      },
+      {
+        "key": "benchmark",
+        "label": "Benchmark (CPI + 6%)",
+        "printed_end_value": 183.5
+      },
+      {
+        "key": "asisa_category_avg",
+        "label": "ASISA Average Category",
+        "printed_end_value": 171.3
+      }
+    ],
+    "data": [
+      {
+        "date": "2020-09-29",
+        "fund": 100.0,
+        "benchmark": 100.0,
+        "asisa_category_avg": 100.0
+      },
+      {
+        "date": "2020-09-30",
+        "fund": 99.5,
+        "benchmark": 100.7,
+        "asisa_category_avg": 99.3
+      },
+      {
+        "date": "2020-10-31",
+        "fund": 97.0,
+        "benchmark": 101.4,
+        "asisa_category_avg": 96.1
+      },
+      {
+        "date": "2020-11-30",
+        "fund": 96.4,
+        "benchmark": 101.9,
+        "asisa_category_avg": 100.0
+      },
+      {
+        "date": "2020-12-31",
+        "fund": 97.2,
+        "benchmark": 102.5,
+        "asisa_category_avg": 100.5
+      },
+      {
+        "date": "2021-01-31",
+        "fund": 99.0,
+        "benchmark": 103.4,
+        "asisa_category_avg": 103.7
+      },
+      {
+        "date": "2021-02-28",
+        "fund": 103.1,
+        "benchmark": 104.5,
+        "asisa_category_avg": 105.7
+      },
+      {
+        "date": "2021-03-31",
+        "fund": 103.6,
+        "benchmark": 105.7,
+        "asisa_category_avg": 105.9
+      },
+      {
+        "date": "2021-04-30",
+        "fund": 105.9,
+        "benchmark": 106.9,
+        "asisa_category_avg": 107.6
+      },
+      {
+        "date": "2021-05-31",
+        "fund": 105.0,
+        "benchmark": 107.5,
+        "asisa_category_avg": 105.4
+      },
+      {
+        "date": "2021-06-30",
+        "fund": 105.6,
+        "benchmark": 108.3,
+        "asisa_category_avg": 108.5
+      },
+      {
+        "date": "2021-07-31",
+        "fund": 107.2,
+        "benchmark": 109.9,
+        "asisa_category_avg": 110.7
+      },
+      {
+        "date": "2021-08-31",
+        "fund": 107.8,
+        "benchmark": 110.9,
+        "asisa_category_avg": 111.5
+      },
+      {
+        "date": "2021-09-30",
+        "fund": 108.9,
+        "benchmark": 111.7,
+        "asisa_category_avg": 111.4
+      },
+      {
+        "date": "2021-10-31",
+        "fund": 113.5,
+        "benchmark": 112.5,
+        "asisa_category_avg": 115.7
+      },
+      {
+        "date": "2021-11-30",
+        "fund": 114.5,
+        "benchmark": 113.6,
+        "asisa_category_avg": 118.2
+      },
+      {
+        "date": "2021-12-31",
+        "fund": 115.6,
+        "benchmark": 114.7,
+        "asisa_category_avg": 120.4
+      },
+      {
+        "date": "2022-01-31",
+        "fund": 113.0,
+        "benchmark": 115.5,
+        "asisa_category_avg": 113.7
+      },
+      {
+        "date": "2022-02-28",
+        "fund": 112.7,
+        "benchmark": 116.7,
+        "asisa_category_avg": 112.4
+      },
+      {
+        "date": "2022-03-31",
+        "fund": 109.7,
+        "benchmark": 118.4,
+        "asisa_category_avg": 110.1
+      },
+      {
+        "date": "2022-04-30",
+        "fund": 112.9,
+        "benchmark": 119.6,
+        "asisa_category_avg": 109.9
+      },
+      {
+        "date": "2022-05-31",
+        "fund": 111.3,
+        "benchmark": 121.0,
+        "asisa_category_avg": 108.2
+      },
+      {
+        "date": "2022-06-30",
+        "fund": 111.6,
+        "benchmark": 122.8,
+        "asisa_category_avg": 104.9
+      },
+      {
+        "date": "2022-07-31",
+        "fund": 113.0,
+        "benchmark": 125.2,
+        "asisa_category_avg": 109.2
+      },
+      {
+        "date": "2022-08-31",
+        "fund": 115.9,
+        "benchmark": 126.0,
+        "asisa_category_avg": 109.5
+      },
+      {
+        "date": "2022-09-30",
+        "fund": 117.2,
+        "benchmark": 126.8,
+        "asisa_category_avg": 106.0
+      },
+      {
+        "date": "2022-10-31",
+        "fund": 121.2,
+        "benchmark": 127.8,
+        "asisa_category_avg": 111.1
+      },
+      {
+        "date": "2022-11-30",
+        "fund": 120.1,
+        "benchmark": 128.8,
+        "asisa_category_avg": 112.0
+      },
+      {
+        "date": "2022-12-31",
+        "fund": 120.9,
+        "benchmark": 129.9,
+        "asisa_category_avg": 110.8
+      },
+      {
+        "date": "2023-01-31",
+        "fund": 127.8,
+        "benchmark": 130.4,
+        "asisa_category_avg": 119.1
+      },
+      {
+        "date": "2023-02-28",
+        "fund": 129.1,
+        "benchmark": 131.9,
+        "asisa_category_avg": 120.5
+      },
+      {
+        "date": "2023-03-31",
+        "fund": 128.1,
+        "benchmark": 133.9,
+        "asisa_category_avg": 118.6
+      },
+      {
+        "date": "2023-04-30",
+        "fund": 131.3,
+        "benchmark": 135.0,
+        "asisa_category_avg": 122.4
+      },
+      {
+        "date": "2023-05-31",
+        "fund": 134.3,
+        "benchmark": 135.9,
+        "asisa_category_avg": 126.1
+      },
+      {
+        "date": "2023-06-30",
+        "fund": 132.1,
+        "benchmark": 136.7,
+        "asisa_category_avg": 126.5
+      },
+      {
+        "date": "2023-07-31",
+        "fund": 131.0,
+        "benchmark": 138.6,
+        "asisa_category_avg": 126.0
+      },
+      {
+        "date": "2023-08-31",
+        "fund": 135.2,
+        "benchmark": 139.7,
+        "asisa_category_avg": 127.9
+      },
+      {
+        "date": "2023-09-30",
+        "fund": 133.5,
+        "benchmark": 141.2,
+        "asisa_category_avg": 124.1
+      },
+      {
+        "date": "2023-10-31",
+        "fund": 133.1,
+        "benchmark": 143.1,
+        "asisa_category_avg": 120.4
+      },
+      {
+        "date": "2023-11-30",
+        "fund": 137.5,
+        "benchmark": 143.7,
+        "asisa_category_avg": 129.0
+      },
+      {
+        "date": "2023-12-31",
+        "fund": 137.1,
+        "benchmark": 144.3,
+        "asisa_category_avg": 131.7
+      },
+      {
+        "date": "2024-01-31",
+        "fund": 138.3,
+        "benchmark": 145.2,
+        "asisa_category_avg": 133.3
+      },
+      {
+        "date": "2024-02-29",
+        "fund": 140.0,
+        "benchmark": 147.2,
+        "asisa_category_avg": 137.6
+      },
+      {
+        "date": "2024-03-31",
+        "fund": 140.3,
+        "benchmark": 149.0,
+        "asisa_category_avg": 139.1
+      },
+      {
+        "date": "2024-04-30",
+        "fund": 142.1,
+        "benchmark": 150.1,
+        "asisa_category_avg": 137.6
+      },
+      {
+        "date": "2024-05-31",
+        "fund": 142.2,
+        "benchmark": 151.1,
+        "asisa_category_avg": 139.7
+      },
+      {
+        "date": "2024-06-30",
+        "fund": 141.2,
+        "benchmark": 151.9,
+        "asisa_category_avg": 139.9
+      },
+      {
+        "date": "2024-07-31",
+        "fund": 144.8,
+        "benchmark": 153.3,
+        "asisa_category_avg": 141.1
+      },
+      {
+        "date": "2024-08-31",
+        "fund": 145.1,
+        "benchmark": 154.2,
+        "asisa_category_avg": 141.8
+      },
+      {
+        "date": "2024-09-30",
+        "fund": 145.9,
+        "benchmark": 155.1,
+        "asisa_category_avg": 143.5
+      },
+      {
+        "date": "2024-10-31",
+        "fund": 149.3,
+        "benchmark": 155.7,
+        "asisa_category_avg": 144.3
+      },
+      {
+        "date": "2024-11-30",
+        "fund": 155.0,
+        "benchmark": 156.5,
+        "asisa_category_avg": 148.5
+      },
+      {
+        "date": "2024-12-31",
+        "fund": 154.8,
+        "benchmark": 157.4,
+        "asisa_category_avg": 150.6
+      },
+      {
+        "date": "2025-01-31",
+        "fund": 157.3,
+        "benchmark": 158.6,
+        "asisa_category_avg": 153.5
+      },
+      {
+        "date": "2025-02-28",
+        "fund": 156.6,
+        "benchmark": 160.7,
+        "asisa_category_avg": 151.9
+      },
+      {
+        "date": "2025-03-31",
+        "fund": 156.2,
+        "benchmark": 162.1,
+        "asisa_category_avg": 149.2
+      },
+      {
+        "date": "2025-04-30",
+        "fund": 160.4,
+        "benchmark": 163.3,
+        "asisa_category_avg": 152.0
+      },
+      {
+        "date": "2025-05-31",
+        "fund": 159.1,
+        "benchmark": 164.4,
+        "asisa_category_avg": 155.1
+      },
+      {
+        "date": "2025-06-30",
+        "fund": 160.3,
+        "benchmark": 165.7,
+        "asisa_category_avg": 158.6
+      },
+      {
+        "date": "2025-07-31",
+        "fund": 161.7,
+        "benchmark": 167.8,
+        "asisa_category_avg": 162.7
+      },
+      {
+        "date": "2025-08-31",
+        "fund": 162.1,
+        "benchmark": 168.5,
+        "asisa_category_avg": 163.6
+      },
+      {
+        "date": "2025-09-30",
+        "fund": 163.8,
+        "benchmark": 169.7,
+        "asisa_category_avg": 166.0
+      },
+      {
+        "date": "2025-10-31",
+        "fund": 166.8,
+        "benchmark": 170.7,
+        "asisa_category_avg": 169.2
+      },
+      {
+        "date": "2025-11-30",
+        "fund": 166.2,
+        "benchmark": 171.4,
+        "asisa_category_avg": 168.0
+      },
+      {
+        "date": "2025-12-31",
+        "fund": 166.5,
+        "benchmark": 172.5,
+        "asisa_category_avg": 167.9
+      },
+      {
+        "date": "2026-01-31",
+        "fund": 171.5,
+        "benchmark": 173.6,
+        "asisa_category_avg": 168.8
+      },
+      {
+        "date": "2026-02-28",
+        "fund": 175.4,
+        "benchmark": 175.1,
+        "asisa_category_avg": 170.1
+      },
+      {
+        "date": "2026-03-31",
+        "fund": 172.3,
+        "benchmark": 176.9,
+        "asisa_category_avg": 163.2
+      },
+      {
+        "date": "2026-04-30",
+        "fund": 175.1,
+        "benchmark": 179.7,
+        "asisa_category_avg": 171.7
+      },
+      {
+        "date": "2026-05-31",
+        "fund": 171.8,
+        "benchmark": 181.7,
+        "asisa_category_avg": 172.6
+      },
+      {
+        "date": "2026-06-30",
+        "fund": 169.7,
+        "benchmark": 183.5,
+        "asisa_category_avg": 171.3
+      }
+    ]
+  },
+  "performance": [
+    {
+      "period": "1Y",
+      "fund_annualised_pct": 5.9,
+      "benchmark_annualised_pct": 10.8,
+      "fund_cumulative_pct": 5.9,
+      "benchmark_cumulative_pct": 10.8
+    },
+    {
+      "period": "3Y",
+      "fund_annualised_pct": 8.7,
+      "benchmark_annualised_pct": 10.3,
+      "fund_cumulative_pct": 28.4,
+      "benchmark_cumulative_pct": 34.2
+    },
+    {
+      "period": "5Y",
+      "fund_annualised_pct": 9.9,
+      "benchmark_annualised_pct": 11.1,
+      "fund_cumulative_pct": 60.6,
+      "benchmark_cumulative_pct": 69.5
+    },
+    {
+      "period": "10Y",
+      "fund_annualised_pct": 5.8,
+      "benchmark_annualised_pct": 10.7,
+      "fund_cumulative_pct": 76.3,
+      "benchmark_cumulative_pct": 175.9
+    },
+    {
+      "period": "Since inception",
+      "fund_annualised_pct": 9.6,
+      "benchmark_annualised_pct": 11.1,
+      "fund_cumulative_pct": 746.5,
+      "benchmark_cumulative_pct": 1053.5
+    }
+  ],
+  "risk_3y_rolling": {
+    "standard_deviation": 5.2,
+    "sharpe_ratio": 0.2,
+    "information_ratio": -0.6,
+    "max_drawdown_pct": -3.3
+  },
+  "calendar_extremes_since_inception": {
+    "highest_annual_pct": 28.9,
+    "lowest_annual_pct": -19.8
+  }
+}

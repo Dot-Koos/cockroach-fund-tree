@@ -1,0 +1,4 @@
+date,letter_ref,letter_url,asset,ticker,asset_type,bucket,action,size_after,size_before,size_type,fund_named,quote,note
+2023-11-30,Vol 1 no 14,https://recm.co.za/letters/v1-14,Berkshire Hathaway,BRK-B,share,equities,held,,,none,yes,have been fortunate enough to be long-term owners of Berkshire Hathaway,"first seen this volume, buy date earlier (""long-term owners""); Global Value fund owns it too"
+2023-12-07,Vol 1 no 15,https://recm.co.za/letters/v1-15,British American Tobacco,BTI,share,equities,held,,,descriptive,no,"I own a little, and it's too much.","unnamed ""I own""; letter does not say which fund, check. Size ""a little"""
+2023-12-14,Vol 1 no 16,https://recm.co.za/letters/v1-16,Gold (physical),GC=F,commodity,hard assets,held,,,descriptive,yes,This fund holds a significant amount of physical gold.,"first seen this volume, buy date earlier. Size ""significant amount"". Possibly the same position as SPDR Gold (GLD) in Vol 4, check"

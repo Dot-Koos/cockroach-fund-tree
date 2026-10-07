@@ -1,0 +1,17 @@
+asset,ticker,bucket,first_buy_date,first_buy_ref,last_size,last_size_ref,status
+SA government bonds (long-dated),,bonds,before 2024-02-08,before Vol 2 no 5,16%,Vol 2 no 27,held
+US Treasury bonds (short-dated),,bonds,2024-04-25,Vol 2 no 15,,,held
+Berkshire Hathaway,BRK-B,equities,before 2023-11-30,before Vol 1 no 14 (held long-term),one of the biggest holdings,Vol 2 no 33,held
+British American Tobacco,BTI,equities,before 2023-12-07,before Vol 1 no 15,a little,Vol 1 no 15,held (fund not named)
+Exor,EXO.AS,equities,before 2024-02-15,before Vol 2 no 6,,,held
+Nestle,NESN.SW,equities,2024-11-07,Vol 2 no 41,0.5%,Vol 2 no 45,held
+Russian equities (frozen),,equities,before 2024-05-02,before Vol 2 no 16,,,held
+South African value stocks,,equities,before 2024-02-08,before Vol 2 no 5,5%,Vol 2 no 27,held
+Walt Disney,DIS,equities,2024-11-07,Vol 2 no 41,1%,Vol 2 no 45,held
+Westaim,WED.V,equities,a few years before 2024-05-23,"before Vol 2 no 19 (""a few years ago"")",small,Vol 2 no 19,held
+iShares MSCI Emerging Markets ETF,EEM,equities,before 2024-10-03,before Vol 2 no 36,,,held
+FRMO,FRMO,hard assets,before 2024-02-15,before Vol 2 no 6,small,Vol 2 no 29,held
+Gold (physical),GC=F,hard assets,before 2023-12-14,before Vol 1 no 16,14% (biggest holding),Vol 2 no 36 / no 42,held
+Texas Pacific Land,TPL,hard assets,before 2024-10-10,before Vol 2 no 37,significant,Vol 2 no 37,held
+Wheaton Precious Metals,WPM,hard assets,before 2024-02-08,before Vol 2 no 5,core holding,Vol 2 no 19,held
+Yellow Cake,YCA.L,hard assets,before 2024-01-18,before Vol 2 no 2,significant,Vol 2 no 17,held

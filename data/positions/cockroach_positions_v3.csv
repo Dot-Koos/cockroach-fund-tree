@@ -1,0 +1,24 @@
+asset,ticker,bucket,first_buy_date,first_buy_ref,last_size,last_size_ref,status
+Japanese yen,JPY=X,cash,before 2025-09-11,before Vol 3 no 33,7%,Vol 3 no 33,held
+South African rand cash,,cash,before 2025-09-11,before Vol 3 no 33,3%,Vol 3 no 33,held
+US dollar cash,,cash,before 2025-09-11,before Vol 3 no 33,15%,Vol 3 no 33,held
+SA government bonds (long-dated),,bonds,before 2024-02-08,before Vol 2 no 5,15%,Vol 3 no 41,held
+US Treasury bonds (short-dated),,bonds,2024-04-25,Vol 2 no 15,,,"held? not mentioned in Vol 3, may be in US$ cash"
+VanEck EM Local Currency Bond ETF,EMLC,bonds,2025-09-11,Vol 3 no 33,8%,Vol 3 no 41,held
+Berkshire Hathaway,BRK-B,equities,before 2023-11-30,before Vol 1 no 14 (held long-term),one of the biggest holdings,Vol 2 no 33,held
+British American Tobacco,BTI,equities,before 2023-12-07,before Vol 1 no 15,a little,Vol 1 no 15,held (fund not named); not mentioned since Vol 1
+Estee Lauder,EL,equities,2025-02-06 (recently before),Vol 3 no 4,0%,Vol 3 no 40,sold
+Exor,EXO.AS,equities,before 2024-02-15,before Vol 2 no 6,,,held
+LSE Group,LSEG.L,equities,2024-12 to 2025-09 (not given),Vol 3 no 33,,,held
+Nestle,NESN.SW,equities,2024-11-07,Vol 2 no 41,0.5%,Vol 2 no 45,held
+Russian equities (frozen),,equities,before 2024-05-02,before Vol 2 no 16,0%,Vol 3 no 13,held (marked to 0)
+South African value stocks,,equities,before 2024-02-08,before Vol 2 no 5,5%,Vol 2 no 27,held
+Walt Disney,DIS,equities,2024-11-07,Vol 2 no 41,1%,Vol 2 no 45,held
+Westaim,WED.V,equities,a few years before 2024-05-23,"before Vol 2 no 19 (""a few years ago"")",small,Vol 2 no 19,held
+iShares MSCI Emerging Markets ETF,EEM,equities,before 2024-10-03,before Vol 2 no 36,,,held
+FRMO,FRMO,hard assets,before 2024-02-15,before Vol 2 no 6,small,Vol 2 no 29,held
+Gold (physical),GC=F,hard assets,before 2023-12-14,before Vol 1 no 16,12%,Vol 3 no 38,held
+Texas Pacific Land,TPL,hard assets,before 2024-10-10,before Vol 2 no 37,core holding,Vol 3 no 29,held
+Valterra Platinum,VAL.JO,hard assets,before 2025-09-11,before Vol 3 no 33 (platinum),,,held
+Wheaton Precious Metals,WPM,hard assets,before 2024-02-08,before Vol 2 no 5,core holding,Vol 2 no 19,held
+Yellow Cake,YCA.L,hard assets,before 2024-01-18,before Vol 2 no 2,significant,Vol 2 no 17,held

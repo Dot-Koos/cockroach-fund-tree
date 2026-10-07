@@ -1,0 +1,1 @@
+const REAL_PRICES={};

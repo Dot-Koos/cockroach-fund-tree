@@ -1,0 +1,4 @@
+asset,ticker,bucket,first_buy_date,first_buy_ref,last_size,last_size_ref,status
+Berkshire Hathaway,BRK-B,equities,before 2023-11-30,before Vol 1 no 14 (held long-term),,Vol 1 no 14,held
+British American Tobacco,BTI,equities,before 2023-12-07,before Vol 1 no 15,a little,Vol 1 no 15,held (fund not named)
+Gold (physical),GC=F,hard assets,before 2023-12-14,before Vol 1 no 16,significant amount,Vol 1 no 16,held
