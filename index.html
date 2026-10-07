@@ -127,6 +127,25 @@ footer{font-size:13px;color:var(--muted);max-width:80ch;border-top:1px solid var
 @media (max-width:520px){.tiles{grid-template-columns:1fr}}
 .detail{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 16px)}
 header{grid-template-columns:1fr}
+.wrap{max-width:1360px;grid-template-columns:minmax(0,1fr)}
+header{grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:end}
+.hnote{margin:0;max-width:62ch;justify-self:end;font-size:14px;line-height:1.6;color:var(--muted);border-left:1px solid var(--line);padding-left:24px}
+@media (max-width:860px){header{grid-template-columns:minmax(0,1fr)}.hnote{justify-self:start;border-left:0;padding-left:0}}
+.top{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:28px;align-items:start}
+.top{align-items:stretch}
+.side{height:0;min-height:100%;display:flex;flex-direction:column;min-width:0}
+.side #list{overflow-y:auto;min-height:0;flex:1;max-height:none}
+.side .co{display:block;padding:4px 8px;line-height:1.3}
+.side .co .nm{font:500 14px/1.3 var(--body);letter-spacing:0}
+.side .co.fundrow .nm{font:600 15px/1.3 var(--display)}
+.side .grp{padding:12px 0 5px;font-size:9px}
+.top+.detail{margin-top:-8px}
+@media (max-width:980px){.top{grid-template-columns:1fr}.side{height:auto;min-height:0}.side #list{max-height:40vh}}
+.ctop{align-items:center}
+[hidden]{display:none!important}
+.keybar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.top.nolist{grid-template-columns:minmax(0,1fr)}
+.keywrap{display:grid;gap:14px}
 .co.fundrow{border-bottom:2px solid var(--ink)}
 .co.fundrow .tk{color:var(--accent)}
 .warn{font-size:13px;color:var(--ink);background:var(--accent-soft);padding:10px 12px;border-left:2px solid var(--accent);margin:0}
@@ -139,18 +158,20 @@ header{grid-template-columns:1fr}
     <div>
       <h1>Cockroach Fund</h1>
     </div>
+    <p class="hnote">R100 invested on 29 Sept 2020, month-end values to 30 June 2026 (read off the factsheet chart, accurate to about ±0.3). The letters start in Aug 2023, so all branches sit in the right-hand part; use "Since 2020" to see the whole fund history. A branch starts at the fund's value on its date. Hover a branch for its size on that date; click it to see Piet's own words below.</p>
   </header>
 
+  <section class="top">
   <section class="chartbox" aria-label="Fund tree chart">
     <div class="ctop">
-      <h2>R100 in the fund, and every holding from the letters</h2>
+      
+      <div class="chips" id="range" role="group" aria-label="Time range"></div>
       <div class="chips" id="chips"></div>
     </div>
-    <div class="chips" id="range" role="group" aria-label="Time range"></div>
+    <div class="chart" id="chart"></div>
+    <div id="key" class="keywrap">
     <div class="legend">
       <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#1C1C1A" stroke-width="3"/></svg>Cockroach Fund (real)</span>
-      <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#6B6A64" stroke-width="1.6" stroke-dasharray="6 4"/></svg>Benchmark CPI + 6%</span>
-      <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#9A9890" stroke-width="1.6" stroke-dasharray="1.5 3"/></svg>Category average</span>
       <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#1C1C1A"/></svg>Bought</span>
       <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.2" fill="#FBFAF7" stroke="#1C1C1A" stroke-width="1.6"/></svg>First mentioned, already owned</span>
       <span><svg width="12" height="12"><path d="M6 1.5 10.5 9.5H1.5Z" fill="#1C1C1A"/></svg>Added</span>
@@ -166,24 +187,24 @@ header{grid-template-columns:1fr}
       <span><svg width="30" height="16"><line x1="6" y1="8" x2="24" y2="8" stroke="#6B6A64" stroke-width="13" stroke-linecap="round"/></svg>16%</span>
       <span><svg width="26" height="12"><line x1="3" y1="6" x2="23" y2="6" stroke="#6B6A64" stroke-width="1.4" stroke-dasharray="3 4"/></svg>Size not given yet</span>
     </div>
-    <div class="chart" id="chart"></div>
-    <p class="how">R100 invested on 29 Sept 2020, month-end values to 30 June 2026 (read off the factsheet chart, accurate to about ±0.3). The letters start in Aug 2023, so all branches sit in the right-hand part; use "Since 2020" to see the whole fund history. A branch starts at the fund's value on its date. Hover a branch for its size on that date; click it to see Piet's own words below.</p>
+    </div>
+    <div class="keybar"><button class="chip" id="keybtn" aria-expanded="true" aria-controls="key">Hide key</button><button class="chip" id="holdbtn" aria-expanded="true" aria-controls="side">Hide holdings</button></div>
   </section>
-
-  <section class="main">
-    <nav aria-label="Holdings">
+    <nav class="side" id="side" aria-label="Holdings">
       <div class="list-head"><h2>Holdings</h2><span id="count"></span></div>
       <div id="list"></div>
     </nav>
-    <article class="detail" id="detail" aria-live="polite"></article>
   </section>
+
+  <article class="detail" id="detail" aria-live="polite"></article>
+
 
   <section aria-label="Trade log">
     <h3>Trade log, from the letters</h3>
     <div class="tbl"><table><thead><tr><th>Date</th><th>Letter</th><th>Action</th><th>Holding</th><th>Size after</th><th>Piet's words</th></tr></thead><tbody id="log"></tbody></table></div>
   </section>
 
-  <footer>Trades, sizes, dates and quotes come from Piet Viljoen's RECM letters (recm.co.za/letters), Vol 1 no 1 to Vol 4 no 35. Sizes are % of the fund as Piet states them; the seven forever stocks are drawn at about 2% each from his "14% in 6 of my 10 Stocks, Forever" (Vol 4 no 32). Branches with a hollow start were already owned before the letter that first mentions them. Russian shares (4 stocks, marked to zero) are still owned but not drawn. The fund, benchmark and category lines come from the Merchant West SCI Worldwide Flexible Fund minimum disclosure document as of 30 June 2026. The holdings' price lines are sample data until real weekly prices are added.</footer>
+  <footer>Trades, sizes, dates and quotes come from Piet Viljoen's RECM letters (recm.co.za/letters), Vol 1 no 1 to Vol 4 no 35. Sizes are % of the fund as Piet states them; the seven forever stocks are drawn at about 2% each from his "14% in 6 of my 10 Stocks, Forever" (Vol 4 no 32). Branches with a hollow start were already owned before the letter that first mentions them. Russian shares (4 stocks, marked to zero) are still owned but not drawn. The fund line comes from the Merchant West SCI Worldwide Flexible Fund minimum disclosure document as of 30 June 2026. The holdings' price lines are sample data until real weekly prices are added.</footer>
 </div>
 
 <script src="data.js"></script>
@@ -267,7 +288,7 @@ document.addEventListener("click",e=>{
 function renderChart(){
   const W=960,Ht=480,ml=48,mr=170,mt=14,mb=30;
   const vis=H.filter(shown),i0=view==="all"?0:LETTERS0;
-  const ln=[FUND,BENCH,AVG].flatMap(a=>a.slice(i0).filter(v=>v!=null));
+  const ln=[FUND].flatMap(a=>a.slice(i0).filter(v=>v!=null));
   let lo=Math.min(...ln),hi=Math.max(...ln);
   vis.forEach(h=>{for(let i=h.bi;i<=h.end;i++){const v=h.val(i);lo=Math.min(lo,v);hi=Math.max(hi,v)}});
   const step=hi-lo>80?20:10;lo=Math.floor(lo/step)*step;hi=Math.ceil(hi/step)*step;
@@ -310,17 +331,16 @@ function renderChart(){
     if(on&&!h.gone&&!h.sold){mk+=`<text x="${x(h.end)+8}" y="${y(h.val(h.end))+4}" font-family="Archivo,Arial" font-weight="600" font-size="13" fill="${c}">${esc(h.name)} ${h.label}</text>`}
   });
   const fl=FEND;
-  const trunk=`<path d="${path(0,fl,i=>AVG[i])}" fill="none" stroke="#9A9890" stroke-width="1.6" stroke-dasharray="1.5 3"/><path d="${path(0,fl,i=>BENCH[i])}" fill="none" stroke="#6B6A64" stroke-width="1.6" stroke-dasharray="6 4"/>`+
+  const trunk=
     `<path d="${path(0,fl,i=>FUND[i])}" fill="none" stroke="#1C1C1A" stroke-width="${sel==="fund"?4:3}"/><g data-id="fund"><path class="hit" d="${path(0,fl,i=>FUND[i])}" data-trunk="1"/></g><circle cx="${x(fl)}" cy="${y(FUND[fl])}" r="${sel==="fund"?5:4}" fill="#1C1C1A"/>`+
-    `<text x="${x(fl)+8}" y="${y(FUND[fl])+4}" font-family="Archivo,Arial" font-weight="${sel==="fund"?700:600}" font-size="${sel==="fund"?15:13}" fill="#1C1C1A">${sel==="fund"?"Cockroach Fund":"Fund"} R${G[G.length-1][1].toFixed(1)}</text><text x="${x(fl)+8}" y="${y(FUND[fl])+19}" class="axis">30 Jun 2026</text>`+
-    `<text x="${x(fl)+8}" y="${y(BENCH[fl])+4}" class="axis">Benchmark R${G[G.length-1][2].toFixed(1)}</text>`;
+    `<text x="${x(fl)+8}" y="${y(FUND[fl])+4}" font-family="Archivo,Arial" font-weight="${sel==="fund"?700:600}" font-size="${sel==="fund"?15:13}" fill="#1C1C1A">${sel==="fund"?"Cockroach Fund":"Fund"} R${G[G.length-1][1].toFixed(1)}</text><text x="${x(fl)+8}" y="${y(FUND[fl])+19}" class="axis">30 Jun 2026</text>`;
   document.getElementById("chart").innerHTML=`<svg viewBox="0 0 ${W} ${Ht}" class="${sel==="fund"||shown(H.find(h=>h.id===sel)||{})?"has-sel":""}" role="img" aria-label="Cockroach Fund with a branch for each holding from the date it was bought or first mentioned">${g}${br}${trunk}${mk}</svg><div class="tip" id="tip" hidden></div>`;
   const tip=document.getElementById("tip"),svg=document.querySelector("#chart svg");
   svg.addEventListener("mousemove",e=>{
     const tr=e.target.closest("[data-trunk]");
     if(tr){const r=svg.getBoundingClientRect(),box=document.getElementById("chart").getBoundingClientRect();
       const i=Math.max(i0,Math.min(FEND,Math.round(i0+((e.clientX-r.left)/r.width*W-ml)/((W-ml-mr)/(N-1-i0)))));
-      tip.innerHTML=`<b>Cockroach Fund</b> · ${D(DATES[i])}<br>R100 → R${FUND[i].toFixed(1)} · benchmark R${BENCH[i].toFixed(1)}`;
+      tip.innerHTML=`<b>Cockroach Fund</b> · ${D(DATES[i])}<br>R100 → R${FUND[i].toFixed(1)}`;
       tip.style.left=(e.clientX-box.left)+"px";tip.style.top=(e.clientY-box.top)+"px";tip.hidden=false;return}
     const t=e.target.closest("[data-tip]");if(!t){tip.hidden=true;return}
     const h=H.find(k=>k.id===t.dataset.tip),r=svg.getBoundingClientRect(),box=document.getElementById("chart").getBoundingClientRect();
@@ -351,11 +371,9 @@ function renderList(){
   const vis=H.filter(shown);
   document.getElementById("count").textContent=vis.length+" holdings";
   const L=G[G.length-1];
-  document.getElementById("list").innerHTML=`<button class="co fundrow" data-id="fund" aria-current="${sel==="fund"}"><span class="nm">Cockroach Fund</span><span class="r lbl">R100 → R${L[1].toFixed(1)}<small>Since Sept 2020</small></span><span class="tk">RCGFA · the whole fund</span></button>`+Object.entries(BUCKETS).filter(([k])=>filter==="all"||filter===k).map(([k,b])=>
-    `<div class="grp"><span><b style="background:${b.c}"></b>${b.n}</span><span>25%</span></div>`+
-    H.filter(h=>h.b===k).sort((a,b)=>(a.sold||a.gone)-(b.sold||b.gone)||(b.sizeAt(N-1).s||0)-(a.sizeAt(N-1).s||0)).map(h=>`<button class="co ${h.sold||h.gone?"gone":""}" data-id="${h.id}" aria-current="${h.id===sel}">
-      <span class="nm">${esc(h.name)}</span><span class="r lbl">${h.label}<small>${h.bought?"Bought":"Seen"} ${DATES[h.bi].toLocaleDateString("en-ZA",{month:"short",year:"2-digit",timeZone:"UTC"})}</small></span>
-      <span class="tk">${esc(h.tk||"no ticker")}</span></button>`).join("")).join("");
+  document.getElementById("list").innerHTML=`<button class="co fundrow" data-id="fund" aria-current="${sel==="fund"}"><span class="nm">Cockroach Fund</span></button>`+Object.entries(BUCKETS).filter(([k])=>filter==="all"||filter===k).map(([k,b])=>
+    `<div class="grp"><span><b style="background:${b.c}"></b>${b.n}</span></div>`+
+    H.filter(h=>h.b===k).sort((a,b)=>(a.sold||a.gone)-(b.sold||b.gone)||(b.sizeAt(N-1).s||0)-(a.sizeAt(N-1).s||0)).map(h=>`<button class="co ${h.sold||h.gone?"gone":""}" data-id="${h.id}" aria-current="${h.id===sel}"><span class="nm">${esc(h.name)}</span></button>`).join("")).join("");
 }
 
 // ---------- detail ----------
@@ -368,8 +386,8 @@ function renderDetail(){
       <span class="pill"><i style="background:#1C1C1A"></i>The whole fund</span></div>
       <div class="stats">
         <div class="v"><h4>R100 on 29 Sept 2020</h4><strong>R${L[1].toFixed(1)}</strong><small>${pa(L[1])}% a year, to 30 Jun 2026</small></div>
-        <div class="v"><h4>Benchmark CPI + 6%</h4><strong>R${L[2].toFixed(1)}</strong><small>${pa(L[2])}% a year</small></div>
-        <div class="v"><h4>Category average</h4><strong>R${L[3].toFixed(1)}</strong><small>${pa(L[3])}% a year</small></div>
+        <div class="v"><h4>Growth</h4><strong>+${(L[1]-100).toFixed(1)}%</strong><small>Sept 2020 to June 2026</small></div>
+        <div class="v"><h4>Per year</h4><strong>${pa(L[1])}%</strong><small>Compounded, in rand</small></div>
       </div>
       <p class="q">About 25% each in cash, bonds, equities and hard assets. ${held} holdings are still on the tree, and the letters name ${named} trades since Aug 2023. Click a branch or a holding to see Piet's own words about it.</p>
       <p class="q"><small>Source: ${esc(FUNDDATA.source)}. Values read off the factsheet chart, accurate to about ±0.3.</small></p>`;
@@ -398,6 +416,20 @@ function renderLog(){
 }
 
 renderRange();
+// chart key toggle (remembered per viewer when the browser allows it)
+(function(){const btn=document.getElementById("keybtn"),key=document.getElementById("key");if(!btn||!key)return;
+  const set=show=>{key.hidden=!show;btn.textContent=show?"Hide key":"Show key";btn.setAttribute("aria-expanded",show);btn.setAttribute("aria-pressed",!show)};
+  let show=true;try{show=localStorage.getItem("cockroach-key")!=="hidden"}catch(e){}
+  set(show);
+  btn.addEventListener("click",()=>{show=key.hidden;set(show);try{localStorage.setItem("cockroach-key",show?"shown":"hidden")}catch(e){}});
+})();
+// holdings list toggle: hiding it gives the chart the full width
+(function(){const btn=document.getElementById("holdbtn"),side=document.getElementById("side"),top=document.querySelector(".top");if(!btn||!side||!top)return;
+  const set=show=>{side.hidden=!show;top.classList.toggle("nolist",!show);btn.textContent=show?"Hide holdings":"Show holdings";btn.setAttribute("aria-expanded",show);btn.setAttribute("aria-pressed",!show)};
+  let show=true;try{show=localStorage.getItem("cockroach-list")!=="hidden"}catch(e){}
+  set(show);
+  btn.addEventListener("click",()=>{show=side.hidden;set(show);try{localStorage.setItem("cockroach-list",show?"shown":"hidden")}catch(e){}});
+})();
 function render(){renderFilters();renderChart();renderList();renderDetail();renderLog()}
 render();
 </script>
