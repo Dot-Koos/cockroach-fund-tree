@@ -12,7 +12,6 @@ import csv
 import datetime as dt
 import glob
 import os
-import sys
 
 import pandas as pd
 
@@ -190,21 +189,4 @@ def main():
 
 
 if __name__ == "__main__":
-    if "--probe" in sys.argv:
-        import yfinance as yf
-        for t in ["0P0000M02W", "0P0000M02W.JO", "0P0000M02R.JO", "WED.TO", "WED", "WEDXF"]:
-            h = yf.download(t, start="2026-01-01", auto_adjust=False, actions=True, progress=False)
-            if h is None or h.empty:
-                print("PROBE", t, "nothing")
-                continue
-            c = h["Close"].iloc[:, 0].dropna(); a = h["Adj Close"].iloc[:, 0].dropna()
-            dv = h["Dividends"].iloc[:, 0] if "Dividends" in h else None
-            print("PROBE", t, len(c), "rows", c.index.min().date(), "->", c.index.max().date(),
-                  "last close", round(float(c.iloc[-1]), 4), "adj/close first", round(float(a.iloc[0] / c.iloc[0]), 5),
-                  "divs", {str(k.date()): float(v) for k, v in dv[dv > 0].items()} if dv is not None else None)
-            try:
-                print("PROBE", t, "info", yf.Ticker(t).fast_info.get("currency"), (yf.Ticker(t).info or {}).get("longName"))
-            except Exception as e:
-                print("PROBE", t, "info failed", e)
-    else:
-        main()
+    main()

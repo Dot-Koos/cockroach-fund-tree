@@ -81,7 +81,7 @@ svg.has-sel .br.on{opacity:1}
 .dhead h2{font-size:clamp(26px,3.2vw,36px);letter-spacing:-.03em;margin-top:10px;line-height:1.05}
 .pill{display:inline-flex;align-items:center;gap:7px;font:600 10px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;padding:6px 9px;border:1px solid var(--ink)}
 .pill i{width:9px;height:9px;display:inline-block}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
 .v{padding:14px 16px;display:grid;gap:6px;background:var(--panel)}
 .v h4{margin:0;font:600 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .v strong{font:600 22px/1.15 var(--display);letter-spacing:-.015em;font-variant-numeric:tabular-nums}
@@ -102,6 +102,7 @@ footer{font-size:13px;color:var(--muted);max-width:80ch;border-top:1px solid var
 @media (max-width:520px){.wrap{padding-inline:16px;padding-block:32px 48px}.detail,.chartbox{padding:16px}.stats{grid-template-columns:1fr}.bar button{font-size:9px;padding:0 6px;letter-spacing:.06em}}
 @media (prefers-reduced-motion:reduce){.br{transition:none}}
 .br.dash{stroke-dasharray:3 5}
+.br.np{stroke-dasharray:1 4;stroke-linecap:round}
 .q{font-size:14px;line-height:1.5}
 .q a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
 .q small{display:block;color:var(--muted);font-size:13px;margin-top:3px}
@@ -158,7 +159,7 @@ header{grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:end}
     <div>
       <h1>Cockroach Fund</h1>
     </div>
-    <p class="hnote">R100 invested on 29 Sept 2020, month-end values to 30 June 2026 (read off the factsheet chart, accurate to about ±0.3). The letters start in Aug 2023, so all branches sit in the right-hand part; use "Since 2020" to see the whole fund history. A branch starts at the fund's value on its date. Hover a branch for its size on that date; click it to see Piet's own words below.</p>
+    <p class="hnote">R100 invested on 29 Sept 2020, month-end values to 30 June 2026 (read off the factsheet chart, accurate to about ±0.3). The letters start in Aug 2023, so all branches sit in the right-hand part; use "Since 2020" to see the whole fund history. A branch starts at the fund's value on its date and then follows the holding's total return in rand (price plus dividends reinvested), to the latest Friday. Hover a branch for its size on that date; click it to see Piet's own words below.</p>
   </header>
 
   <section class="top">
@@ -186,6 +187,7 @@ header{grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:end}
       <span><svg width="26" height="14"><line x1="5" y1="7" x2="21" y2="7" stroke="#6B6A64" stroke-width="8.3" stroke-linecap="round"/></svg>10%</span>
       <span><svg width="30" height="16"><line x1="6" y1="8" x2="24" y2="8" stroke="#6B6A64" stroke-width="13" stroke-linecap="round"/></svg>16%</span>
       <span><svg width="26" height="12"><line x1="3" y1="6" x2="23" y2="6" stroke="#6B6A64" stroke-width="1.4" stroke-dasharray="3 4"/></svg>Size not given yet</span>
+      <span><svg width="26" height="12"><line x1="3" y1="6" x2="23" y2="6" stroke="#6B6A64" stroke-width="2" stroke-dasharray="1 4" stroke-linecap="round"/></svg>No market price, drawn flat</span>
     </div>
     </div>
     <div class="keybar"><button class="chip" id="keybtn" aria-expanded="true" aria-controls="key">Hide key</button><button class="chip" id="holdbtn" aria-expanded="true" aria-controls="side">Hide holdings</button></div>
@@ -204,7 +206,7 @@ header{grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:end}
     <div class="tbl"><table><thead><tr><th>Date</th><th>Letter</th><th>Action</th><th>Holding</th><th>Size after</th><th>Piet's words</th></tr></thead><tbody id="log"></tbody></table></div>
   </section>
 
-  <footer>Trades, sizes, dates and quotes come from Piet Viljoen's RECM letters (recm.co.za/letters), Vol 1 no 1 to Vol 4 no 35. Sizes are % of the fund as Piet states them; the seven forever stocks are drawn at about 2% each from his "14% in 6 of my 10 Stocks, Forever" (Vol 4 no 32). Branches with a hollow start were already owned before the letter that first mentions them. Russian shares (4 stocks, marked to zero) are still owned but not drawn. The fund line comes from the Merchant West SCI Worldwide Flexible Fund minimum disclosure document as of 30 June 2026. The holdings' price lines are sample data until real weekly prices are added.</footer>
+  <footer>Trades, sizes, dates and quotes come from Piet Viljoen's RECM letters (recm.co.za/letters), Vol 1 no 1 to Vol 4 no 35. Sizes are % of the fund as Piet states them; the seven forever stocks are drawn at about 2% each from his "14% in 6 of my 10 Stocks, Forever" (Vol 4 no 32). Branches with a hollow start were already owned before the letter that first mentions them. Russian shares (4 stocks, marked to zero) are still owned but not drawn. The fund line comes from the Merchant West SCI Worldwide Flexible Fund minimum disclosure document as of 30 June 2026. Each holding's line is its total return in rand: Friday closes from Yahoo Finance with every dividend reinvested on its ex-date, converted at that week's exchange rate; currency held as cash follows its rand exchange rate. Holdings with no market price (unlisted funds, SA and Namibian government bonds, cash) and holdings whose price history doesn't reach back to their first mention are drawn flat and left out of the bucket returns. Prices are updated every Friday.</footer>
 </div>
 
 <script src="data.js"></script>
@@ -215,25 +217,23 @@ header{grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:end}
 // ---------- setup ----------
 const BUCKETS={cash:{n:"Cash",c:"#5F7F8E",w:25},bonds:{n:"Bonds",c:"#4E7A52",w:25},equity:{n:"Equities",c:"#9C3B2C",w:25},hard:{n:"Hard assets",c:"#A87412",w:25}};
 
-const DATES=[];for(let d=new Date(Date.UTC(2020,9,2));d<=new Date(Date.UTC(2026,9,2));d.setUTCDate(d.getUTCDate()+7))DATES.push(new Date(d));
+// weekly Fridays from 2 Oct 2020 to the latest Friday with prices (or today)
+const PX_END=(()=>{let m=null;if(typeof REAL_PRICES!=="undefined")Object.values(REAL_PRICES).forEach(p=>{const d=p.length&&p[p.length-1][0];if(d&&(!m||d>m))m=d});return m?new Date(m+"T00:00:00Z"):new Date()})();
+const DATES=[];for(let d=new Date(Date.UTC(2020,9,2));d<=PX_END;d.setUTCDate(d.getUTCDate()+7))DATES.push(new Date(d));
 const N=DATES.length;
 const idx=s=>{const t=new Date(s+"T00:00:00Z");for(let i=0;i<N;i++)if(DATES[i]>=t)return i;return N-1};
 const GONE_AT=idx("2026-09-10"); // first full breakdown without them
 const thick=p=>0.8+p*0.75;
 const VERB={buy:"Bought",add:"Added",trim:"Trimmed",sold:"Sold",held:"Mentioned",resized:"Size update",est:"Estimate"};
 
-// ---------- sample prices (replace with real weekly closes) ----------
+// ---------- total return prices in rand, from prices.js (built by scripts/fetch_prices.py) ----------
 const PRICES=typeof REAL_PRICES!=="undefined"?REAL_PRICES:null;
-let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
-const gauss=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
-const walk=(mu,vol)=>{const p=[1];for(let i=1;i<N;i++)p.push(p[i-1]*Math.exp(mu/52+vol*gauss()));return p};
 // real month-end values, interpolated to weeks; null after the last factsheet date
 const G=FUNDDATA.growth.map(r=>[new Date(r[0]+"T00:00:00Z"),r[1],r[2],r[3]]);
 const interp=col=>DATES.map(d=>{if(d>G[G.length-1][0])return null;for(let k=1;k<G.length;k++)if(G[k][0]>=d){const [a,b]=[G[k-1],G[k]],f=(d-a[0])/(b[0]-a[0]);return a[col]+(b[col]-a[col])*f}return null});
 const FUND=interp(1),BENCH=interp(2),AVG=interp(3);
 const FEND=FUND.findLastIndex(v=>v!=null);
 const LETTERS0=idx("2023-08-25");let view="letters";
-const MU={cash:.04,bonds:.08,equity:.09,hard:.12},VOL={cash:.008,bonds:.014,equity:.03,hard:.038};
 
 // ---------- prepare assets ----------
 const H=DATA.assets.map(a=>{
@@ -243,11 +243,13 @@ const H=DATA.assets.map(a=>{
   const sold=h.ev.find(e=>e.a==="sold");
   h.lastMention=h.ev[h.ev.length-1].i;
   h.end=sold?sold.i:(h.gone?Math.max(GONE_AT,h.lastMention):N-1);
-  h.px=walk(MU[h.b]+(rnd()-.5)*.2,VOL[h.b]);h.real=false;
-  // real weekly closes when data/prices/<TICKER>.csv was supplied (last close on or before each Friday)
+  // total return in rand (last value on or before each Friday). Used only when the history reaches back to
+  // the branch's start; otherwise the branch is drawn flat and left out of the returns.
+  h.px=DATES.map(()=>1);h.real=false;
   const rp=PRICES&&h.tk&&PRICES[h.tk];
-  if(rp&&rp.length){const pts=rp.map(([d,c])=>[new Date(d+"T00:00:00Z"),c]).sort((a,b)=>a[0]-b[0]);let k=0,last=pts[0][1];
-    h.px=DATES.map(d=>{while(k<pts.length&&pts[k][0]<=d){last=pts[k][1];k++}return last});h.real=true}
+  if(rp&&rp.length){const pts=rp.map(([d,c])=>[new Date(d+"T00:00:00Z"),c]).sort((a,b)=>a[0]-b[0]);
+    if(pts[0][0]<=new Date(DATES[h.bi].getTime()+14*864e5)){let k=0,last=pts[0][1];
+      h.px=DATES.map(d=>{while(k<pts.length&&pts[k][0]<=d){last=pts[k][1];k++}return last});h.real=true}}
   h.base=FUND[h.bi]??FUND[FEND];h.val=i=>h.base*h.px[i]/h.px[h.bi];
   // size at week i: last stated % at or before i
   h.sizeAt=i=>{let s=null,est=false;for(const e of h.ev){if(e.i>i)break;if(e.s!=null&&e.a!=="sold"){s=e.s;est=e.a==="est"}}return {s,est}};
@@ -256,7 +258,7 @@ const H=DATA.assets.map(a=>{
   h.id=a.id;
   return h;
 });
-const ret=h=>h.px[h.end]/h.px[h.bi]-1;
+const ret=h=>h.real?h.px[h.end]/h.px[h.bi]-1:null;
 let filter="all",sel="fund";
 const shown=h=>filter==="all"||h.b===filter;
 const D=d=>d.toLocaleDateString("en-ZA",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
@@ -264,13 +266,13 @@ const Ds=s=>D(new Date(s+"T00:00:00Z"));
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 // Bucket return: each holding still in the bucket, from the day it enters the tree to the latest week,
-// weighted by its latest size (1% where no size is given). Sample until real prices are added.
+// weighted by its latest size (1% where no size is given). Total return in rand; holdings with no price are left out.
 const P=n=>(n>=0?"+":"−")+Math.abs(n*100).toFixed(1)+"%";
-function bucketRet(k){let w=0,t=0;H.filter(h=>h.b===k&&!h.sold&&!h.gone).forEach(h=>{const s=h.sizeAt(N-1).s||1;w+=s;t+=s*ret(h)});return w?t/w:0}
+function bucketRet(k){let w=0,t=0;H.filter(h=>h.b===k&&!h.sold&&!h.gone&&h.real).forEach(h=>{const s=h.sizeAt(N-1).s||1;w+=s;t+=s*ret(h)});return w?t/w:null}
 // ---------- bucket bar + chips ----------
 function renderFilters(){
   if(document.getElementById("bar"))document.getElementById("bar").innerHTML=Object.entries(BUCKETS).map(([k,b])=>
-    `<button style="flex:${b.w};background:${b.c}" data-b="${k}" aria-pressed="${filter===k}" class="${filter!=="all"&&filter!==k?"dim":""}"><span class="bn">${b.n} 25%</span><span class="br2">${P(bucketRet(k))}${H.some(h=>h.b===k&&!h.sold&&!h.gone&&!h.real)?" <em>sample</em>":""}</span></button>`).join("");
+    `<button style="flex:${b.w};background:${b.c}" data-b="${k}" aria-pressed="${filter===k}" class="${filter!=="all"&&filter!==k?"dim":""}"><span class="bn">${b.n} 25%</span><span class="br2">${bucketRet(k)==null?"–":P(bucketRet(k))} <em>TR</em></span></button>`).join("");
   document.getElementById("chips").innerHTML=[["all","All",null]].concat(Object.entries(BUCKETS).map(([k,b])=>[k,b.n,b.c])).map(([k,n,c])=>
     `<button class="chip" data-b="${k}" aria-pressed="${filter===k}">${c?`<i style="background:${c}"></i>`:""}${n}</button>`).join("");
 }
@@ -312,7 +314,7 @@ function renderChart(){
     for(let k=0;k<cuts.length-1;k++){
       const a=cuts[k],b=cuts[k+1];if(b<=a)continue;
       const {s}=h.sizeAt(a),after=h.gone&&a>=h.lastMention;
-      segs+=`<path class="${cls}${s==null||after?" dash":""}" d="${path(a,b,h.val)}" stroke="${c}" stroke-width="${after?1.2:(s==null?1.4:thick(s)).toFixed(1)}"/>`;
+      segs+=`<path class="${cls}${!h.real?" np":s==null||after?" dash":""}" d="${path(a,b,h.val)}" stroke="${c}" stroke-width="${after?1.2:(s==null?1.4:thick(s)).toFixed(1)}"/>`;
     }
     br+=`<g data-id="${h.id}">${segs}<path class="hit" d="${path(h.bi,h.end,h.val)}" data-tip="${h.id}"/></g>`;
     const opa=on?1:.6;
@@ -346,7 +348,8 @@ function renderChart(){
     const h=H.find(k=>k.id===t.dataset.tip),r=svg.getBoundingClientRect(),box=document.getElementById("chart").getBoundingClientRect();
     const i=Math.max(h.bi,Math.min(h.end,Math.round(i0+((e.clientX-r.left)/r.width*W-ml)/((W-ml-mr)/(N-1-i0)))));
     const z=h.sizeAt(i),gone=h.gone&&i>h.lastMention;
-    tip.innerHTML=`<b>${esc(h.name)}</b> · ${D(DATES[i])}<br>${gone?"Not mentioned since "+D(DATES[h.lastMention]):z.s!=null?(z.est?"About ":"")+z.s+"% of the fund":"Size not given yet"}`;
+    const trTxt=h.real?`Total return in rand since ${D(DATES[h.bi])}: ${P(h.px[i]/h.px[h.bi]-1)}`:"No market price: drawn flat";
+    tip.innerHTML=`<b>${esc(h.name)}</b> · ${D(DATES[i])}<br>${gone?"Not mentioned since "+D(DATES[h.lastMention]):z.s!=null?(z.est?"About ":"")+z.s+"% of the fund":"Size not given yet"}<br>${trTxt}`;
     tip.style.left=(e.clientX-box.left)+"px";tip.style.top=(e.clientY-box.top)+"px";tip.hidden=false;
   });
   svg.addEventListener("mouseleave",()=>tip.hidden=true);
@@ -401,6 +404,7 @@ function renderDetail(){
       <div class="v"><h4>${h.bought?"Bought":"First mentioned"}</h4><strong>${Ds(first.d)}</strong><small>${esc(first.ref)}${h.bought?"":" · already owned"}</small></div>
       <div class="v"><h4>Latest size</h4><strong>${h.label}</strong><small>${h.sizeAt(h.end).est?"Estimated from the 14% group":"As Piet states it"}</small></div>
       <div class="v"><h4>In the letters</h4><strong>${h.ev.filter(e=>e.a!=="est").length}×</strong><small>${trades} trade${trades===1?"":"s"} named</small></div>
+      <div class="v"><h4>Total return, in rand</h4><strong>${h.real?P(ret(h)):"–"}</strong><small>${h.real?`${D(DATES[h.bi])} to ${D(DATES[h.end])}${h.sold?" (sold)":h.gone?" (last listed)":""}`:"No market price for this holding"}</small></div>
     </div>
     ${h.gone?`<p class="warn">Piet never reported selling this, but it isn't in his full list of holdings in Vol 4 no 32. The dotted line runs from the last mention to that letter.</p>`:""}
     <div><h3>What Piet said</h3><div class="tbl"><table><thead><tr><th>Date</th><th>Action</th><th>Size</th><th>Quote</th></tr></thead><tbody>

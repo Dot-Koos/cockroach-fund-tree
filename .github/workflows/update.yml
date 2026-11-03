@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "0 17 * * 5"   # every Friday 19:00 South African time
   push:
-    branches: [main, total-return]
+    branches: [main]
     paths:
       - "data/trades/**"
       - "data/fund/**"
@@ -31,7 +31,6 @@ jobs:
       - name: Fetch total return prices and build the data files
         run: |
           pip install yfinance pandas
-          python scripts/fetch_prices.py --probe
           python scripts/fetch_prices.py
           python scripts/build_data.py
 
