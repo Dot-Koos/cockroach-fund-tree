@@ -31,7 +31,7 @@ jobs:
       - name: Fetch total return prices and build the data files
         run: |
           pip install yfinance pandas
-          python scripts/fetch_prices.py --find-fund
+          python scripts/fetch_prices.py --probe
           python scripts/fetch_prices.py
           python scripts/build_data.py
 
