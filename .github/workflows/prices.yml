@@ -1,0 +1,42 @@
+name: Update prices
+
+on:
+  workflow_dispatch:        # "Run workflow" button on the Actions tab (once this file is on main)
+  push:
+    branches-ignore: [main] # test branches: runs on every commit there
+  schedule:
+    - cron: "17 4 * * 6"    # every Saturday 06:17 SA time, after Friday's close
+
+permissions:
+  contents: write
+
+jobs:
+  prices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install packages
+        run: pip install yfinance pandas
+
+      - name: Download weekly prices in rand
+        run: python scripts/fetch_prices.py
+
+      - name: Rebuild data files
+        run: python scripts/build_data.py
+
+      - name: Save changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add data/prices prices.js data.js fund.js
+          if git diff --cached --quiet; then
+            echo "No price changes."
+          else
+            git commit -m "Update prices $(date -u +%Y-%m-%d)"
+            git push
+          fi
