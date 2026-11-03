@@ -1,0 +1,46 @@
+name: Update prices
+
+on:
+  schedule:
+    - cron: "0 17 * * 5"   # every Friday 19:00 South African time
+  push:
+    branches: [main, total-return]
+    paths:
+      - "data/trades/**"
+      - "data/fund/**"
+      - "scripts/**"
+  workflow_dispatch: {}      # "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prices
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch total return prices and build the data files
+        run: |
+          pip install yfinance pandas
+          python scripts/fetch_prices.py --find-fund
+          python scripts/fetch_prices.py
+          python scripts/build_data.py
+
+      - name: Save to the repository (GitHub Pages republishes the site)
+        run: |
+          git config user.name "prices-bot"
+          git config user.email "prices-bot@users.noreply.github.com"
+          git add data/prices prices.js data.js fund.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Update prices"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
