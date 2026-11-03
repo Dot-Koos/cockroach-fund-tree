@@ -204,7 +204,7 @@ header{grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:end}
     <div class="tbl"><table><thead><tr><th>Date</th><th>Letter</th><th>Action</th><th>Holding</th><th>Size after</th><th>Piet's words</th></tr></thead><tbody id="log"></tbody></table></div>
   </section>
 
-  <footer>Trades, sizes, dates and quotes come from Piet Viljoen's RECM letters (recm.co.za/letters), Vol 1 no 1 to Vol 4 no 35. Sizes are % of the fund as Piet states them; the seven forever stocks are drawn at about 2% each from his "14% in 6 of my 10 Stocks, Forever" (Vol 4 no 32). Branches with a hollow start were already owned before the letter that first mentions them. Russian shares (4 stocks, marked to zero) are still owned but not drawn. The fund line comes from the Merchant West SCI Worldwide Flexible Fund minimum disclosure document as of 30 June 2026. The holdings' price lines are sample data until real weekly prices are added.</footer>
+  <footer>Trades, sizes, dates and quotes come from Piet Viljoen's RECM letters (recm.co.za/letters), Vol 1 no 1 to Vol 4 no 35. Sizes are % of the fund as Piet states them; the seven forever stocks are drawn at about 2% each from his "14% in 6 of my 10 Stocks, Forever" (Vol 4 no 32). Branches with a hollow start were already owned before the letter that first mentions them. Russian shares (4 stocks, marked to zero) are still owned but not drawn. The fund line comes from the Merchant West SCI Worldwide Flexible Fund minimum disclosure document as of 30 June 2026. Each branch follows the holding's real weekly closing price (adjusted for dividends and splits) converted to rand, so it can be compared with the fund line; branches start at the fund's level on the date of the first letter that mentions the holding. Holdings with no market price (SA and Namibian bonds, the MWI funds, rand cash) are drawn flat and marked "no market price". Prices: Yahoo Finance, refreshed weekly.</footer>
 </div>
 
 <script src="data.js"></script>
@@ -215,14 +215,14 @@ header{grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:end}
 // ---------- setup ----------
 const BUCKETS={cash:{n:"Cash",c:"#5F7F8E",w:25},bonds:{n:"Bonds",c:"#4E7A52",w:25},equity:{n:"Equities",c:"#9C3B2C",w:25},hard:{n:"Hard assets",c:"#A87412",w:25}};
 
-const DATES=[];for(let d=new Date(Date.UTC(2020,9,2));d<=new Date(Date.UTC(2026,9,2));d.setUTCDate(d.getUTCDate()+7))DATES.push(new Date(d));
+const DATES=[];for(let d=new Date(Date.UTC(2020,9,2));d<=new Date();d.setUTCDate(d.getUTCDate()+7))DATES.push(new Date(d));
 const N=DATES.length;
 const idx=s=>{const t=new Date(s+"T00:00:00Z");for(let i=0;i<N;i++)if(DATES[i]>=t)return i;return N-1};
 const GONE_AT=idx("2026-09-10"); // first full breakdown without them
 const thick=p=>0.8+p*0.75;
 const VERB={buy:"Bought",add:"Added",trim:"Trimmed",sold:"Sold",held:"Mentioned",resized:"Size update",est:"Estimate"};
 
-// ---------- sample prices (replace with real weekly closes) ----------
+// ---------- prices: real weekly closes in rand from prices.js; flat line when a holding has no market price ----------
 const PRICES=typeof REAL_PRICES!=="undefined"?REAL_PRICES:null;
 let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
 const gauss=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
@@ -243,7 +243,7 @@ const H=DATA.assets.map(a=>{
   const sold=h.ev.find(e=>e.a==="sold");
   h.lastMention=h.ev[h.ev.length-1].i;
   h.end=sold?sold.i:(h.gone?Math.max(GONE_AT,h.lastMention):N-1);
-  h.px=walk(MU[h.b]+(rnd()-.5)*.2,VOL[h.b]);h.real=false;
+  h.px=DATES.map(()=>1);h.real=false;
   // real weekly closes when data/prices/<TICKER>.csv was supplied (last close on or before each Friday)
   const rp=PRICES&&h.tk&&PRICES[h.tk];
   if(rp&&rp.length){const pts=rp.map(([d,c])=>[new Date(d+"T00:00:00Z"),c]).sort((a,b)=>a[0]-b[0]);let k=0,last=pts[0][1];
@@ -270,7 +270,7 @@ function bucketRet(k){let w=0,t=0;H.filter(h=>h.b===k&&!h.sold&&!h.gone).forEach
 // ---------- bucket bar + chips ----------
 function renderFilters(){
   if(document.getElementById("bar"))document.getElementById("bar").innerHTML=Object.entries(BUCKETS).map(([k,b])=>
-    `<button style="flex:${b.w};background:${b.c}" data-b="${k}" aria-pressed="${filter===k}" class="${filter!=="all"&&filter!==k?"dim":""}"><span class="bn">${b.n} 25%</span><span class="br2">${P(bucketRet(k))}${H.some(h=>h.b===k&&!h.sold&&!h.gone&&!h.real)?" <em>sample</em>":""}</span></button>`).join("");
+    `<button style="flex:${b.w};background:${b.c}" data-b="${k}" aria-pressed="${filter===k}" class="${filter!=="all"&&filter!==k?"dim":""}"><span class="bn">${b.n} 25%</span><span class="br2">${P(bucketRet(k))}${H.some(h=>h.b===k&&!h.sold&&!h.gone&&!h.real)?" <em>part</em>":""}</span></button>`).join("");
   document.getElementById("chips").innerHTML=[["all","All",null]].concat(Object.entries(BUCKETS).map(([k,b])=>[k,b.n,b.c])).map(([k,n,c])=>
     `<button class="chip" data-b="${k}" aria-pressed="${filter===k}">${c?`<i style="background:${c}"></i>`:""}${n}</button>`).join("");
 }
@@ -400,6 +400,7 @@ function renderDetail(){
     <div class="stats">
       <div class="v"><h4>${h.bought?"Bought":"First mentioned"}</h4><strong>${Ds(first.d)}</strong><small>${esc(first.ref)}${h.bought?"":" · already owned"}</small></div>
       <div class="v"><h4>Latest size</h4><strong>${h.label}</strong><small>${h.sizeAt(h.end).est?"Estimated from the 14% group":"As Piet states it"}</small></div>
+      <div class="v"><h4>Price move in rand</h4><strong>${h.real?P(ret(h)):"–"}</strong><small>${h.real?(h.sold||h.gone?"From first mention to "+(h.sold?"sale":"last seen"):"Since first mention, to "+Ds(DATES[h.end].toISOString().slice(0,10))):"No market price"}</small></div>
       <div class="v"><h4>In the letters</h4><strong>${h.ev.filter(e=>e.a!=="est").length}×</strong><small>${trades} trade${trades===1?"":"s"} named</small></div>
     </div>
     ${h.gone?`<p class="warn">Piet never reported selling this, but it isn't in his full list of holdings in Vol 4 no 32. The dotted line runs from the last mention to that letter.</p>`:""}
