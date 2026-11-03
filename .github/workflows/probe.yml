@@ -1,0 +1,29 @@
+name: Probe
+on:
+  push:
+    branches: [probe]
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pip install yfinance pandas requests
+      - run: |
+          python - <<'PY'
+          import yfinance as yf, requests, re
+          for t in ["STXGOV.JO","ETFGOV.JO","STXGOV","GOVI.JO","STXIND.JO","STX40.JO","ETFBND.JO","CSPROP.JO"]:
+              h=yf.download(t,start="2023-01-01",auto_adjust=False,actions=True,progress=False)
+              print("YF",t,"nothing" if h is None or h.empty else f"{len(h)} rows {h.index.min().date()} {h.index.max().date()} last {float(h['Close'].iloc[-1,0])}")
+          H={"User-Agent":"Mozilla/5.0"}
+          for u in ["https://www.moneyweb.co.za/tools-and-data/click-a-unit-trust/RCGFA/",
+                    "https://www.fundsdata.co.za/summary.aspx?c=RCGFA",
+                    "https://www.fundsdata.co.za/funds/RCGFA",
+                    "https://funds.profiledata.co.za/moneyweb/Default.aspx?FundCode=RCGFA"]:
+              try:
+                  r=requests.get(u,headers=H,timeout=30); t=r.text
+                  print("URL",u,r.status_code,len(t))
+                  for k in ["NAV","Latest Price","63.","history","Price History","json","csv","Value Fund","Enhanced Income"]:
+                      i=t.find(k)
+                      if i>=0: print("   ",k,"->",re.sub(r"\s+"," ",t[max(0,i-150):i+200]))
+                  for m in sorted(set(re.findall(r'(?:href|src)="([^"]*(?:price|nav|hist|chart|json|csv|Price|Chart)[^"]*)"',t)))[:25]: print("   LINK",m)
+              except Exception as e: print("URL",u,"ERR",e)
+          PY
