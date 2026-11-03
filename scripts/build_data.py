@@ -8,7 +8,7 @@ Reads:
 Writes (next to index.html):
   data.js    holdings and their events
   fund.js    fund growth line and factsheet figures
-  prices.js  real prices by ticker (empty until you add files to data/prices)
+  prices.js  real prices by ticker, in rand (from data/prices, filled by scripts/fetch_prices.py)
 
 Run from the repo root:  python scripts/build_data.py
 """
@@ -39,6 +39,8 @@ BUCKET = {"cash": "cash", "bonds": "bonds", "equities": "equity", "hard assets":
 # Drawn with a dotted end and a "?". Edit this list as new letters clear things up.
 GONE = {"Wheaton Precious Metals", "Exor", "Westaim", "British American Tobacco",
         "US dollar cash", "South African rand cash"}
+# Price stand-ins for holdings with no ticker of their own (rand price = exchange rate)
+PRICE_TICKER = {"US dollar cash": "USDZAR=X"}
 # Owned but not drawn (marked to zero, no prices)
 SKIP = {"Russian equities (frozen)"}
 # Forever stocks drawn at an estimated size from a group figure
@@ -63,7 +65,7 @@ def build_holdings():
             continue
         x = assets.setdefault(a, {"id": re.sub(r"[^a-z0-9]", "", a.lower())[:14], "name": NAME.get(a, a),
                                   "tk": r["ticker"], "b": BUCKET[r["bucket"]], "ev": []})
-        x["tk"] = r["ticker"] or x["tk"]
+        x["tk"] = r["ticker"] or x["tk"] or PRICE_TICKER.get(a, "")
         x["b"] = BUCKET[r["bucket"]]
         size = float(r["size_after"]) if r["size_after"] else None
         x["ev"].append({"d": r["date"], "ref": r["letter_ref"], "url": r["letter_url"], "a": r["action"],
